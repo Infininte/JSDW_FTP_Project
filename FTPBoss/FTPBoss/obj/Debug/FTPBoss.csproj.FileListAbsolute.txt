@@ -13,3 +13,6 @@ C:\Users\Scott\SkyDrive\Liberty\Spring 2014\Networking 355\FTPBoss\FTPBoss\obj\D
 C:\Users\Scott\SkyDrive\Liberty\Spring 2014\Networking 355\FTPBoss\FTPBoss\obj\Debug\FTPBoss.pdb
 C:\Users\Scott\SkyDrive\Liberty\Spring 2014\Networking 355\FTPBoss\FTPBoss\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\Scott\SkyDrive\Liberty\Spring 2014\Networking 355\FTPBoss\FTPBoss\obj\Debug\FTPBoss_MarkupCompile.lref
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\bin\Debug\FTPBoss.exe.config
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\obj\Debug\FTPBoss.exe
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\obj\Debug\FTPBoss.pdb
