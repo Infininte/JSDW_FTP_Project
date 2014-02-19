@@ -27,9 +27,13 @@
             </GroupBox>
 
             <GroupBox Grid.Column="1" Grid.Row="0" Header="Server">
-                <TreeView>
-                    
-                </TreeView>
+                <ListView>
+                    <ListView.ItemTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type self:DirectoryItem}" ItemsSource="{Binding DirectoryItems}">
+                            <TextBlock Text="{Binding Name}"/>
+                        </HierarchicalDataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </GroupBox>
         </Grid>        
     </DockPanel>
