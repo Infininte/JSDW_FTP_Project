@@ -1,0 +1,36 @@
+﻿<Window x:Class="FTPBoss.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:self="clr-namespace:FTPBoss"
+        Title="MainWindow" Height="480" Width="640">
+    <DockPanel>
+        <ToolBarPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <Button>Button 1</Button>
+            <Button>Button 2</Button>
+        </ToolBarPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            
+            <GroupBox Grid.Column="0" Grid.Row="0" Header="Local">
+                <TreeView Name="localDirectoryBrowser" TreeViewItem.Expanded="TreeViewItemExpanded"> 
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type self:DirectoryItem}" ItemsSource="{Binding DirectoryItems}">
+                            <TextBlock Text="{Binding Name}" />
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </GroupBox>
+
+            <GroupBox Grid.Column="1" Grid.Row="0" Header="Server">
+                <TreeView>
+                    
+                </TreeView>
+            </GroupBox>
+        </Grid>        
+    </DockPanel>
+</Window>
