@@ -7,7 +7,7 @@ using System.Net;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace ftp
+namespace FTPBoss
 {
     class RequestMethods
     {
@@ -558,7 +558,7 @@ namespace ftp
                     }
                     else // yay, it's a file!
                     {
-                        DeleteFile(path + dirName, items[i].FileName);
+                        FTPBoss.Program.DeleteFile2(path + dirName, items[i].FileName);
                     }
                 }
 
@@ -575,7 +575,7 @@ namespace ftp
                  * */
         }
 
-        static bool DeleteFile(string path, string fileName)
+        static bool DeleteFile2(string path, string fileName)
         {
             Console.WriteLine("DeleteFile('" + path + "', '" + fileName + "')");
 
