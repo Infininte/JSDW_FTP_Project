@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.IO;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using System.Windows.Forms;                     // *** delete this
 
 namespace FTPBoss
 {
@@ -26,6 +27,30 @@ namespace FTPBoss
         public MainWindow()
         {
             InitializeComponent();
+
+            //System.Windows.DialogBox dialogBox = new DialogBox();
+
+            Contents dirContents = new Contents("", "");
+
+            List<Item> dirItems = dirContents.GetItems();
+
+            // ListView Object
+            // ListView.Columns.Add("FileName"); // ("Filesize");
+
+            // ListView.Row.Add["FileName"](dirItems[i].FileName);
+
+            string test = "";
+            for (int i = 0; i < dirItems.Count; ++i )
+            {
+                test += dirItems[i].FileName + " (" + dirItems[i].FileSize + ")\r\n";
+            }
+
+
+                // Delete reference: System.Windows.Forms
+                System.Windows.Forms.MessageBox.Show(test);
+
+            //Program2.GetRequest(2, );
+            //FTPBoss.Item RemoteItem = new FTPBoss.Item();
 
             getRootDirectories();
         }
@@ -118,5 +143,11 @@ namespace FTPBoss
         public ObservableCollection<DirectoryItem> DirectoryItems { get; set; }
     }
 
-
+    public class Remote
+    {
+        public void AutoConnect()
+        {
+            
+        }
+    }
 }

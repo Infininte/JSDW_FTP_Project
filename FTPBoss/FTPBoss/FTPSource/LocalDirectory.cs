@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace ConsoleApplication1
+namespace FTPBoss
 {
-    class Program
+    class Program2
     {
         static bool CreateDirectory(string dirName)
         {
