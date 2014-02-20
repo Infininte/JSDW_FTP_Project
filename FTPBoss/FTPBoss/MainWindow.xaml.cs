@@ -182,10 +182,4 @@ namespace FTPBoss
         public string Name { get; set; }
         public string Type { get; set; }
     }
-
-    //Message to test commit theory
-    public class test
-    {
-        public string blue;
-    }
 }

@@ -1076,6 +1076,4 @@ namespace FTPBoss
             return true;
         }
     }
-
-    //test
 }
