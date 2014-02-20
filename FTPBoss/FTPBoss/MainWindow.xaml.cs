@@ -186,6 +186,6 @@ namespace FTPBoss
     //Message to test commit theory
     public class test
     {
-        public string test;
+        public string blue;
     }
 }
