@@ -127,7 +127,10 @@ namespace FTPBoss
             }
         }
 
+
+
     }
+
 
     public class DirectoryItem
     {
@@ -143,11 +146,40 @@ namespace FTPBoss
         public ObservableCollection<DirectoryItem> DirectoryItems { get; set; }
     }
 
-    public class Remote
+
+    //This is how I learned Binding it may be (and probably is) possible to write it
+    //  like Scott did above.
+
+    //Class to create and give the directory ObservableCollection
+    public class remoteDirectories
     {
-        public void AutoConnect()
+        public ObservableCollection<remoteItem> getDirectories()
         {
-            
+            ObservableCollection<remoteItem> dirList = new ObservableCollection<remoteItem>();
+            populateList(dirList);
+            return dirList;
         }
+
+        //This may be streamlined by moving it directly into Dane's GetItems() method, but for now it works
+        public void populateList(ObservableCollection<remoteItem> dirList)
+        {
+            Contents dirContents = new Contents("", "");
+
+            List<Item> dirItems = dirContents.GetItems();
+
+            for (int i = 0; i < dirItems.Count; ++i)
+            {
+                dirList.Add(new remoteItem { Name=dirItems[i].FileName, Type=dirItems[i].FileType});
+            }
+        }
+    }
+
+    //My own item for remote connection. This should really be one and the same with Scott's item, but his initialized
+    //  an ObservableCollection and that is not how I learned to do it. Scott and I need to work out a way so that we
+    //  only have one Item class
+    public class remoteItem
+    {
+        public string Name { get; set; }
+        public string Type { get; set; }
     }
 }

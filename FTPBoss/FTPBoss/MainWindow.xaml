@@ -4,6 +4,9 @@
             xmlns:self="clr-namespace:FTPBoss"
         Title="MainWindow" Height="480" Width="640">
     <DockPanel>
+        <DockPanel.Resources>
+            <ObjectDataProvider x:Key="remoteDir" ObjectType="{x:Type self:remoteDirectories}" MethodName="getDirectories"/>
+        </DockPanel.Resources>
         <ToolBarPanel DockPanel.Dock="Top" Orientation="Horizontal">
             <Button>Button 1</Button>
             <Button>Button 2</Button>
@@ -27,11 +30,18 @@
             </GroupBox>
 
             <GroupBox Grid.Column="1" Grid.Row="0" Header="Server">
-                <ListView>
+                <ListView ItemsSource="{Binding Source={StaticResource remoteDir}}" IsSynchronizedWithCurrentItem="True">
                     <ListView.ItemTemplate>
-                        <HierarchicalDataTemplate DataType="{x:Type self:DirectoryItem}" ItemsSource="{Binding DirectoryItems}">
-                            <TextBlock Text="{Binding Name}"/>
-                        </HierarchicalDataTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Name="Name" Width="200"/>
+                                    <ColumnDefinition Name="Type" Width="100"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding Path=Name}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Path=Type}"/>
+                            </Grid>
+                        </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
             </GroupBox>
