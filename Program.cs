@@ -260,22 +260,6 @@ namespace ConsoleApplication1
             CreateFile("test2", "newFile.txt");
             Console.WriteLine("FINDING FILE SIZES");
             getFileSize("test");
-            if (size >= 1073741824)
-                size = decimal.Divide(f.Length, 1073741824);
-                    Console.WriteLine("{0} is {1} GB in size", f.Name, size);
-                }
-                else if (f.Length >= 1048576)
-                {
-                    size = decimal.Divide(f.Length, 1048576);
-                    Console.WriteLine("{0} is {1} MB in size", f.Name, size);
-                }
-                else if (f.Length >= 1024)
-                {
-                    size = decimal.Divide(f.Length, 1024);
-                    Console.WriteLine("{0} is {1} KB in size", f.Name, size);
-                }
-                else
-                    Console.WriteLine("{0} is {1} bytes in size", f.Name, f.Length);
             ListFiles("test");
             //RenameFile("test", "oldFile.txt", "newFile.txt");
             //MoveFile("test", "test2", "file1.txt", "file1.txt");
