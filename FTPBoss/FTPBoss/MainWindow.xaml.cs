@@ -22,7 +22,7 @@ namespace FTPBoss
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         public MainWindow()
         {
@@ -53,7 +53,9 @@ namespace FTPBoss
             //FTPBoss.Item RemoteItem = new FTPBoss.Item();
 
             getRootDirectories();
+
         }
+
 
         private void getRootDirectories()
         {
@@ -66,9 +68,6 @@ namespace FTPBoss
             {
                 if(drive.DriveType != DriveType.NoRootDirectory && drive.IsReady)
                 {
-                    //Debug.WriteLine(drive.Name);
-                    //Debug.WriteLine(drive.DriveType);
-                    //Debug.WriteLine(drive.RootDirectory);
                     DirectoryItem driveRoot = new DirectoryItem() { Name = drive.Name, Path = drive.RootDirectory.ToString() };
                     rootDir.DirectoryItems.Add(driveRoot);
                     getDirectories(driveRoot.Path, driveRoot);
@@ -117,13 +116,8 @@ namespace FTPBoss
 
         private void TreeViewItemExpanded(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine(e.OriginalSource.ToString());
             TreeViewItem treeItem = e.OriginalSource as TreeViewItem;
-            Debug.WriteLine(treeItem.ToString());
             DirectoryItem directory = treeItem.Header as DirectoryItem;
-            
-            Debug.WriteLine(directory.ToString());
-            Debug.WriteLine(directory.Path);
 
             if (directory.Path != null)
             {
@@ -132,34 +126,7 @@ namespace FTPBoss
                 getFiles(directory.Path, directory);
             }
             
-
-
-            //var item = treeItem.GetValue(Name);
-            //Debug.WriteLine();
-
-            /*
-            Debug.WriteLine(treeItem.ToString());
-            DirectoryItem directory = treeItem as DirectoryItem;
-            DirectoryItem dir = e.Source as DirectoryItem;
-
-            //Console.WriteLine(directory.ToString());
-            //Console.WriteLine(dir.ToString());
-
-            if(directory != null)
-            {
-                Console.WriteLine(directory.Name);
- 
-            }
-
-            if (dir != null)
-            {
-                Console.WriteLine(dir.Name);
-            }
-             */
         }
-
-
-
     }
 
 

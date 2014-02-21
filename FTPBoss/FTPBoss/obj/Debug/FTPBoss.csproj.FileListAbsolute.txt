@@ -28,3 +28,7 @@ C:\Users\Scott\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\obj\Debug\MainWindo
 C:\Users\Scott\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\obj\Debug\FTPBoss.g.resources
 C:\Users\Scott\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\obj\Debug\FTPBoss.Properties.Resources.resources
 C:\Users\Scott\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\obj\Debug\FTPBoss.csproj.GenerateResource.Cache
+C:\Users\Scott\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\obj\Debug\App.baml
+C:\Users\Scott\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\bin\Debug\MahApps.Metro.dll
+C:\Users\Scott\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\Scott\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\bin\Debug\MahApps.Metro.xml
