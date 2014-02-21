@@ -28,7 +28,7 @@ namespace FTPBoss
         public const int FILE = 1,
                          DIR  = 2;
 
-        public static string chmod2Num(string input)
+        public static int chmod2Num(string input)
         {
             if (input[0] == 'd' || input[0] == '-')
                 input = input.Substring(1);
@@ -54,7 +54,7 @@ namespace FTPBoss
             if (input[8] == 'x')
                 sum += 1;
 
-            return "0" + Convert.ToString(sum);
+            return sum;
         }
 
         public static int GetCountInDir(string path, string dirName, int type = 0)
@@ -623,7 +623,7 @@ namespace FTPBoss
 
             bool directory = (matches[0].Groups[1].Value == "d");
 
-            string permissions = Utility.chmod2Num(matches[0].Groups[2].Value);
+            int permissions = Utility.chmod2Num(matches[0].Groups[2].Value);
 
             int month = DateTime.Parse(matches[0].Groups[4].Value + " 01, 1900").Month;
             int day = Convert.ToInt32(matches[0].Groups[5].Value);
@@ -660,7 +660,7 @@ namespace FTPBoss
         }
 
         /* MODIFIED */
-        public bool Add(string iName, int iSize, string iType, DateTime iModified, string iPermissions, bool iDirectory = false)
+        public bool Add(string iName, int iSize, string iType, DateTime iModified, int iPermissions, bool iDirectory = false)
         {
             this.Items.Add(new Item(iName, iSize, iType, iModified, iPermissions, iDirectory));
 
@@ -681,38 +681,35 @@ namespace FTPBoss
     class Item
     {
         public string FileName,
-                      FileType,
-                      Permissions;
+                      FileType;
         public DateTime LastModified;
         public bool Directory,
                     UpOneLevel;
-        public int FileSize;
-        public Item(string iName, int iSize, string iType, DateTime iModified, string iPermissions, bool iDirectory = false)
+        public int FileSize, Permissions;
+        public Item(string iName, int iSize, string iType, DateTime iModified, int iPermissions, bool iDirectory = false)
         {
             if (iName == "..")
             {
-                this.UpOneLevel = true;
-
-                iType = iPermissions = null;
-                iSize = -1;
-                iDirectory = true;
+                UpOneLevel = iDirectory = true;
+                iSize = iPermissions = -1;
+                iType = null;
             }
             else
-                this.UpOneLevel = false;
+                UpOneLevel = false;
 
-            this.FileName     = iName;
-            this.FileSize     = iSize;
-            this.FileType     = iType;
-            this.LastModified = iModified;
-            this.Permissions  = iPermissions;
-            this.Directory    = iDirectory;
+            FileName     = iName;
+            FileSize     = iSize;
+            FileType     = iType;
+            LastModified = iModified;
+            Permissions  = iPermissions;
+            Directory    = iDirectory;
         }
         public override string ToString()
         {
             if (this.UpOneLevel)
                 return "..";
             else
-                return this.FileName + " " + this.FileSize + " " + this.LastModified.ToString() + " " + this.Permissions + " " + Convert.ToString(this.Directory);
+                return FileName + " " + FileSize + " " + LastModified.ToString() + " " + Permissions + " " + Convert.ToString(Directory);
         }
     }
 
