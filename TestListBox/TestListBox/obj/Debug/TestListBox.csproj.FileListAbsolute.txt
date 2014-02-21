@@ -1,0 +1,15 @@
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\bin\Debug\TestListBox.exe.config
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\bin\Debug\TestListBox.exe
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\bin\Debug\TestListBox.pdb
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\obj\Debug\TestListBox.csprojResolveAssemblyReference.cache
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\obj\Debug\MainWindow.baml
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\obj\Debug\MainWindow.g.cs
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\obj\Debug\App.g.cs
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\obj\Debug\TestListBox_MarkupCompile.cache
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\obj\Debug\TestListBox.g.resources
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\obj\Debug\TestListBox.Properties.Resources.resources
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\obj\Debug\TestListBox.csproj.GenerateResource.Cache
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\obj\Debug\TestListBox.exe
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\obj\Debug\TestListBox.pdb
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\obj\Debug\TestListBox_MarkupCompile.lref
