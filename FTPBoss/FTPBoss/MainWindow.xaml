@@ -1,25 +1,37 @@
-﻿<Window x:Class="FTPBoss.MainWindow"
+﻿<Controls:MetroWindow x:Class="FTPBoss.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:self="clr-namespace:FTPBoss"
-        Title="MainWindow" Height="480" Width="640">
-    <DockPanel>
-        <DockPanel.Resources>
-            <ObjectDataProvider x:Key="remoteDir" ObjectType="{x:Type self:remoteDirectories}" MethodName="getDirectories"/>
-        </DockPanel.Resources>
-        <ToolBarPanel DockPanel.Dock="Top" Orientation="Horizontal">
-            <Button>Button 1</Button>
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        Title="FTP Boss" Height="480" Width="640">
+
+    <Window.Resources>
+        <ObjectDataProvider x:Key="remoteDir" ObjectType="{x:Type self:remoteDirectories}" MethodName="getDirectories"/>
+    </Window.Resources>
+
+    <Controls:MetroWindow.Flyouts>
+        <Controls:FlyoutsControl>
+            
+        </Controls:FlyoutsControl>
+    </Controls:MetroWindow.Flyouts>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        
+        <ToolBarPanel Orientation="Horizontal">
+            <Button>Button 2</Button>
             <Button>Button 2</Button>
         </ToolBarPanel>
-        <Grid>
-            <Grid.RowDefinitions>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            
-            <GroupBox Grid.Column="0" Grid.Row="0" Header="Local">
+
+        <GroupBox Grid.Column="0" Grid.Row="1" Header="Local">
                 <TreeView Name="localDirectoryBrowser" TreeViewItem.Expanded="TreeViewItemExpanded"> 
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate DataType="{x:Type self:DirectoryItem}" ItemsSource="{Binding DirectoryItems}">
@@ -29,8 +41,8 @@
                 </TreeView>
             </GroupBox>
 
-            <GroupBox Grid.Column="1" Grid.Row="0" Header="Server">
-                <ListView x:Name="RemoteView" ItemsSource="{Binding Source={StaticResource remoteDir}}" IsSynchronizedWithCurrentItem="True" SelectionChanged="ListView_SelectionChanged">
+            <GroupBox Grid.Column="1" Grid.Row="1" Header="Server">
+                <ListView ItemsSource="{Binding Source={StaticResource remoteDir}}" IsSynchronizedWithCurrentItem="True">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -44,7 +56,7 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-            </GroupBox>
+        </GroupBox>
         </Grid>        
-    </DockPanel>
-</Window>
+</Controls:MetroWindow>
+   

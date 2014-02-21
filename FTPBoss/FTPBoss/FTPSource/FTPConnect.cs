@@ -5,7 +5,8 @@ using System.Text;
 using System.Web;
 using System.Net;
 using System.IO;
-using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;   // For reg expression
+using System.Net.Sockets;               // For file permissions
 
 namespace FTPBoss
 {
@@ -366,6 +367,126 @@ namespace FTPBoss
             }
             Console.WriteLine("File Deleted Successfully");
             return true;
+        }
+    }
+
+    class FtpSocket
+    {
+        const int TIMEOUT = 10000;
+        TcpClient client;
+        private string Host, User, Pass, Error, Response;
+        int Port, ResponseCode;
+
+        public string GetError() { return Error; }
+        public string GetResponse() { return Response; }
+        public int GetResponseCode() { return ResponseCode; }
+
+        public FtpSocket(string host, string user, string pass, int port = 21, bool connect = true)
+        {
+            Host = host;
+            User = user;
+            Pass = pass;
+            Port = port;
+            Error = Response = null;
+            client = new TcpClient();
+            ResponseCode = 0;
+
+            if (connect)
+                Connect();
+        }
+        ~FtpSocket()
+        {
+            client.Close();
+        }
+
+        public void Flush()
+        {
+            try
+            {
+                NetworkStream stream = client.GetStream();
+                if (stream.CanWrite && stream.CanRead)
+                {
+                    Byte[] bytes = new Byte[client.ReceiveBufferSize];
+                    stream.ReadTimeout = TIMEOUT;
+                    stream.Read(bytes, 0, Convert.ToInt32(client.ReceiveBufferSize));
+                }
+            }
+            catch (Exception ex)
+            {
+                Error = "Flush() error: " + ex.Message.ToString();
+                Console.WriteLine(Error);
+            }
+        }
+
+        public string Command(string command)
+        {
+            string response = "";
+
+            try
+            {
+                NetworkStream stream = client.GetStream();
+
+                if (stream.CanWrite && stream.CanRead)
+                {
+                    Byte[] bytes = Encoding.ASCII.GetBytes(command + "\r\n");
+                    stream.Write(bytes, 0, bytes.Length);
+                    StreamReader reader = new StreamReader(stream);
+                    response = reader.ReadLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                Error = "Command() error: " + ex.Message.ToString();
+                Console.WriteLine(Error);
+            }
+
+            ResponseCode = Convert.ToInt32(response.Split(' ')[0]);
+            Response = response;
+
+            return response;
+        }
+
+        public bool Connect()
+        {
+            string response;
+
+            try
+            {
+                client.Connect(Host, Port);
+                Flush();
+                response = Command("USER " + User);
+
+                if (response.IndexOf("331") >= 0)
+                {
+                    response = Command("PASS " + Pass);
+                    if (response.IndexOf("230") >= 0)
+                    {
+                        Console.WriteLine("Successfully logged in");
+                        Console.WriteLine(response);
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Error = "Connect() error: " + ex.Message.ToString();
+                Console.WriteLine(Error);
+            }
+
+            return false;
+        }
+
+        public bool Send(string command)
+        {
+            string response = Command(command);
+
+            if (response.IndexOf("200") >= 0)
+            {
+                Console.WriteLine("Success");
+                return true;
+            }
+
+            return false;
         }
     }
 
@@ -831,20 +952,17 @@ namespace FTPBoss
             }
         }
 
-        static bool ChangeFilePermission(string path, string fileName)
+        static bool ChangeFilePermission(string path, string fileName, int permission)
         {
-            // client.SiteChangeMode("file.txt", new UnixPermissionSet(UnixPermission.Write));
+            FtpSocket socket = new FtpSocket(Host, User, Pass, 21);
 
-            /*
-             * List<FtpItem> items = client.GetList();
-             * List<FtpPermission> permissions = items[0].Permissions;
-             * bool canRead = permissions.Contains(FtpPermission.Read);
-             * bool canWrite = permissions.Contains(FtpPermission.Write);
-             * bool canCreateFile = permissions.Contains(FtpPermission.CreateFile);
-             * bool canChangeFolder = permissions.Contains(FtpPermission.ChangeFolder);
-             * */
+            // Chmod
+            socket.Command("SITE CHMOD " + permission + " " + Utility.FormatPath(path, fileName));
 
-            return false;
+            Console.WriteLine(socket.GetResponse());
+            Console.WriteLine(socket.GetResponseCode());
+
+            return true;
         }
 
         static bool CreateDirectory(string path, string dirName)
