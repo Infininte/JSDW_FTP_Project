@@ -98,41 +98,6 @@ namespace FTPBoss
 
     class Local
     {
-        public const int bufferSize = 2048;
-        public static bool FileExists(string path, string fileName)
-        {
-            return File.Exists(path + fileName);
-        }
-
-        public static bool DirectoryExists(string path, string dirName)
-        {
-            return true;
-        }
-
-        public static bool WriteFile(string path, string fileName, Stream stream)
-        {
-            FileStream localFileStream = new FileStream(path + fileName, FileMode.Create);
-            byte[] byteBuffer = new byte[bufferSize];
-            int bytesRead = stream.Read(byteBuffer, 0, bufferSize);
-
-            try
-            {
-                while (bytesRead > 0)
-                {
-                    localFileStream.Write(byteBuffer, 0, bytesRead);
-                    bytesRead = stream.Read(byteBuffer, 0, bufferSize);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return false;
-            }
-
-            localFileStream.Close();
-            return true;
-        }
-
         static bool CreateDirectory(string dirName)
         {
             string path = @"c:\" + dirName + @"\";
@@ -202,10 +167,10 @@ namespace FTPBoss
         }
 
 
-        static void getFileSize(string dir)
+        static string getFileSize(string dir)
         {
 
-            decimal size;
+            string val = "Error in getFileSize function";
             //make reference to a directory
             DirectoryInfo di = new DirectoryInfo(@"c:\" + dir);
             //get reference to each file in the directory
@@ -214,22 +179,26 @@ namespace FTPBoss
             {
                 if (f.Length >= 1073741824)
                 {
-                    size = decimal.Divide(f.Length, 1073741824);
-                    Console.WriteLine("{0} is {1} GB in size", f.Name, size);
+                    val = f.Name + "is " + f.Length / 1048576 + " GB in size";
+                    return val;
                 }
                 else if (f.Length >= 1048576)
                 {
-                    size = decimal.Divide(f.Length, 1048576);
-                    Console.WriteLine("{0} is {1} MB in size", f.Name, size);
+                    val = f.Name + "is " + f.Length / 1048576 + " MB in size";
+                    return val;
                 }
                 else if (f.Length >= 1024)
                 {
-                    size = decimal.Divide(f.Length, 1024);
-                    Console.WriteLine("{0} is {1} KB in size", f.Name, size);
+                    val = f.Name + "is " + f.Length / 1024 + " KB in size";
+                    return val;
                 }
                 else
-                    Console.WriteLine("{0} is {1} bytes in size", f.Name, f.Length);
+                {
+                    val = f.Name + "is " + f.Length + " bytes in size";
+                    return val;
+                }
             }
+            return val;
         }
 
         //list files in the directory
@@ -366,6 +335,44 @@ namespace FTPBoss
                 }
             }
             Console.WriteLine("File Deleted Successfully");
+            return true;
+        }
+
+
+        /*
+        public const int bufferSize = 2048;
+        public static bool FileExists(string path, string fileName)
+        {
+            return File.Exists(path + fileName);
+        }
+
+        public static bool DirectoryExists(string path, string dirName)
+        {
+            return true;
+        }
+        */
+
+        public static bool WriteFile(string path, string fileName, Stream stream)
+        {
+            FileStream localFileStream = new FileStream(path + fileName, FileMode.Create);
+            byte[] byteBuffer = new byte[bufferSize];
+            int bytesRead = stream.Read(byteBuffer, 0, bufferSize);
+
+            try
+            {
+                while (bytesRead > 0)
+                {
+                    localFileStream.Write(byteBuffer, 0, bytesRead);
+                    bytesRead = stream.Read(byteBuffer, 0, bufferSize);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
+
+            localFileStream.Close();
             return true;
         }
     }
