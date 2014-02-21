@@ -30,7 +30,7 @@
             </GroupBox>
 
             <GroupBox Grid.Column="1" Grid.Row="0" Header="Server">
-                <ListView ItemsSource="{Binding Source={StaticResource remoteDir}}" IsSynchronizedWithCurrentItem="True">
+                <ListView x:Name="RemoteView" ItemsSource="{Binding Source={StaticResource remoteDir}}" IsSynchronizedWithCurrentItem="True" SelectionChanged="ListView_SelectionChanged">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
