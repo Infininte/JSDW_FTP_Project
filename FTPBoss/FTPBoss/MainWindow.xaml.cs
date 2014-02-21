@@ -28,6 +28,8 @@ namespace FTPBoss
         {
             InitializeComponent();
 
+            //test
+
             //System.Windows.DialogBox dialogBox = new DialogBox();
 
             Contents dirContents = new Contents("", "");
