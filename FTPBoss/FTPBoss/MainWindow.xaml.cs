@@ -47,7 +47,7 @@ namespace FTPBoss
 
 
                 // Delete reference: System.Windows.Forms
-                System.Windows.Forms.MessageBox.Show(test);
+                //System.Windows.Forms.MessageBox.Show(test);
 
             //Program2.GetRequest(2, );
             //FTPBoss.Item RemoteItem = new FTPBoss.Item();
@@ -118,13 +118,44 @@ namespace FTPBoss
         private void TreeViewItemExpanded(object sender, RoutedEventArgs e)
         {
             Console.WriteLine(e.OriginalSource.ToString());
-            DirectoryItem directory = e.OriginalSource as DirectoryItem;
+            TreeViewItem treeItem = e.OriginalSource as TreeViewItem;
+            Debug.WriteLine(treeItem.ToString());
+            DirectoryItem directory = treeItem.Header as DirectoryItem;
+            
+            Debug.WriteLine(directory.ToString());
+            Debug.WriteLine(directory.Path);
 
+            if (directory.Path != null)
+            {
+                directory.DirectoryItems.Clear();
+                getDirectories(directory.Path, directory);
+                getFiles(directory.Path, directory);
+            }
+            
+
+
+            //var item = treeItem.GetValue(Name);
+            //Debug.WriteLine();
+
+            /*
+            Debug.WriteLine(treeItem.ToString());
+            DirectoryItem directory = treeItem as DirectoryItem;
+            DirectoryItem dir = e.Source as DirectoryItem;
+
+            //Console.WriteLine(directory.ToString());
+            //Console.WriteLine(dir.ToString());
 
             if(directory != null)
             {
                 Console.WriteLine(directory.Name);
+ 
             }
+
+            if (dir != null)
+            {
+                Console.WriteLine(dir.Name);
+            }
+             */
         }
 
 
