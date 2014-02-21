@@ -28,18 +28,9 @@ namespace FTPBoss
         {
             InitializeComponent();
 
-            //test
-
-            //System.Windows.DialogBox dialogBox = new DialogBox();
-
             Contents dirContents = new Contents("", "");
 
             List<Item> dirItems = dirContents.GetItems();
-
-            // ListView Object
-            // ListView.Columns.Add("FileName"); // ("Filesize");
-
-            // ListView.Row.Add["FileName"](dirItems[i].FileName);
 
             string test = "";
             for (int i = 0; i < dirItems.Count; ++i )
@@ -47,12 +38,9 @@ namespace FTPBoss
                 test += dirItems[i].FileName + " (" + dirItems[i].FileSize + ")\r\n";
             }
 
-
-                // Delete reference: System.Windows.Forms
-                //System.Windows.Forms.MessageBox.Show(test);
-
-            //Program2.GetRequest(2, );
-            //FTPBoss.Item RemoteItem = new FTPBoss.Item();
+            ObservableCollection<remoteItem> remoteDirectoryList = new ObservableCollection<remoteItem>();
+            remoteDirectories dirObject = new remoteDirectories();
+            dirObject.populateList(remoteDirectoryList);
 
             getRootDirectories();
 

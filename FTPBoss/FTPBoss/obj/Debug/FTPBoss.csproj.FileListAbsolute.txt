@@ -32,6 +32,3 @@ C:\Users\Scott\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\obj\Debug\App.baml
 C:\Users\Scott\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\bin\Debug\MahApps.Metro.dll
 C:\Users\Scott\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\bin\Debug\System.Windows.Interactivity.dll
 C:\Users\Scott\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\bin\Debug\MahApps.Metro.xml
-C:\Users\Dane\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\bin\Debug\FTPBoss.exe.config
-C:\Users\Dane\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\obj\Debug\FTPBoss.exe
-C:\Users\Dane\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\obj\Debug\FTPBoss.pdb
