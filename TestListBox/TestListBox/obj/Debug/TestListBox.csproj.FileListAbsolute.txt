@@ -13,3 +13,6 @@ C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\obj\Debug\
 C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\obj\Debug\TestListBox.pdb
 C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\Walter\Source\Repos\JSDW_FTP_Project\TestListBox\TestListBox\obj\Debug\TestListBox_MarkupCompile.lref
+C:\Users\Jordan\Source\Repos\JSDW_FTP_Project2\TestListBox\TestListBox\bin\Debug\TestListBox.exe.config
+C:\Users\Jordan\Source\Repos\JSDW_FTP_Project2\TestListBox\TestListBox\obj\Debug\TestListBox.exe
+C:\Users\Jordan\Source\Repos\JSDW_FTP_Project2\TestListBox\TestListBox\obj\Debug\TestListBox.pdb
