@@ -98,6 +98,7 @@ namespace FTPBoss
 
     class Local
     {
+        public const int bufferSize = 2048;
         static bool CreateDirectory(string dirName)
         {
             string path = @"c:\" + dirName + @"\";
@@ -179,22 +180,22 @@ namespace FTPBoss
             {
                 if (f.Length >= 1073741824)
                 {
-                    val = f.Name + "is " + f.Length / 1048576 + " GB in size";
+                    val = "GB";
                     return val;
                 }
                 else if (f.Length >= 1048576)
                 {
-                    val = f.Name + "is " + f.Length / 1048576 + " MB in size";
+                    val = "MB";
                     return val;
                 }
                 else if (f.Length >= 1024)
                 {
-                    val = f.Name + "is " + f.Length / 1024 + " KB in size";
+                    val = "KB";
                     return val;
                 }
                 else
                 {
-                    val = f.Name + "is " + f.Length + " bytes in size";
+                    val = "bytes";
                     return val;
                 }
             }
@@ -338,8 +339,7 @@ namespace FTPBoss
             return true;
         }
 
-
-        /*
+               /*
         public const int bufferSize = 2048;
         public static bool FileExists(string path, string fileName)
         {
@@ -375,6 +375,7 @@ namespace FTPBoss
             localFileStream.Close();
             return true;
         }
+
     }
 
     class FtpSocket
@@ -1083,7 +1084,7 @@ namespace FTPBoss
             }
          
             // Check if to file already exists
-            if (Local.FileExists(toPath, toFile))
+            if (File.Exists(toPath + toFile))
             {
                 Console.WriteLine("File '" + toFile + "' already exists on local drive!");
                 return false;
@@ -1126,14 +1127,14 @@ namespace FTPBoss
         static bool Upload(string fromPath, string fromFile, string toPath, string toFile)
         {
             // Check if from file exists
-            if (!Local.FileExists(fromPath, fromFile))
+            if (!File.Exists(fromPath + fromFile))
             {
                 Console.WriteLine("File '" + toFile + "' does not exist on local drive!");
                 return false;
             }
 
             // Check if to file already exists
-            if (FileExists(fromPath, fromFile))
+            if (File.Exists(fromPath + fromFile))
             {
                 Console.WriteLine("File '" + toFile + "' already exists on server!");
                 return false;

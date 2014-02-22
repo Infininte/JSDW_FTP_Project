@@ -4,11 +4,25 @@
             xmlns:self="clr-namespace:FTPBoss"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         Title="FTP Boss" Height="480" Width="640">
-
+    
+    <!--
     <Window.Resources>
         <ObjectDataProvider x:Key="remoteDir" ObjectType="{x:Type self:remoteDirectories}" MethodName="getDirectories"/>
-    </Window.Resources>
+        <ResourceDictionary x:Key="someDictionary">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro.Resources;component/Icons.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
+            <Style x:Key="DescriptionHeaderStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="22" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    -->
+    
+   
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
             
@@ -18,6 +32,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -31,18 +46,25 @@
             <Button>Button 2</Button>
         </ToolBarPanel>
 
-        <GroupBox Grid.Column="0" Grid.Row="1" Header="Local">
-                <TreeView Name="localDirectoryBrowser" TreeViewItem.Expanded="TreeViewItemExpanded"> 
+        <Label Grid.Row="1" Grid.Column="0" Content="Local" FontSize="22" Margin="10 0 0 0"/>
+                <TreeView Margin="10 0 0 0" Grid.Row="2" Grid.Column="0" Name="localDirectoryBrowser" TreeViewItem.Expanded="TreeViewItemExpanded"> 
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate DataType="{x:Type self:DirectoryItem}" ItemsSource="{Binding DirectoryItems}">
                             <TextBlock Text="{Binding Name}" />
                         </HierarchicalDataTemplate>
                     </TreeView.ItemTemplate>
                 </TreeView>
-            </GroupBox>
-
-            <GroupBox Grid.Column="1" Grid.Row="1" Header="Server">
-                <ListView ItemsSource="{Binding Source={StaticResource remoteDir}}" IsSynchronizedWithCurrentItem="True">
+         
+        <Label Grid.Row="1" Grid.Column="1" Content="Server" FontSize="22" Margin="10 0 0 0"/>
+        <ListBox Margin="10 0 0 0" Grid.Row="2" Grid.Column="1" Name="ServerDirectoryBrowser">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type  self:RemoteDirectoryItem}" >
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <!--
+        <ListView BorderThickness="0" Margin="10 0 0 0" Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Source={StaticResource remoteDir}}" IsSynchronizedWithCurrentItem="True">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -56,7 +78,7 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-        </GroupBox>
+        -->
         </Grid>        
 </Controls:MetroWindow>
    
