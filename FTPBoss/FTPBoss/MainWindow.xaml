@@ -4,7 +4,8 @@
             xmlns:self="clr-namespace:FTPBoss"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         Title="FTP Boss" Height="480" Width="640">
-
+    
+    <!--
     <Window.Resources>
         <ObjectDataProvider x:Key="remoteDir" ObjectType="{x:Type self:remoteDirectories}" MethodName="getDirectories"/>
         <ResourceDictionary x:Key="someDictionary">
@@ -19,6 +20,7 @@
             </Style>
         </ResourceDictionary>
     </Window.Resources>
+    -->
     
    
     <Controls:MetroWindow.Flyouts>
@@ -52,8 +54,16 @@
                         </HierarchicalDataTemplate>
                     </TreeView.ItemTemplate>
                 </TreeView>
-
+         
         <Label Grid.Row="1" Grid.Column="1" Content="Server" FontSize="22" Margin="10 0 0 0"/>
+        <ListBox Margin="10 0 0 0" Grid.Row="2" Grid.Column="1" Name="ServerDirectoryBrowser">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type  self:RemoteDirectoryItem}" >
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <!--
         <ListView BorderThickness="0" Margin="10 0 0 0" Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Source={StaticResource remoteDir}}" IsSynchronizedWithCurrentItem="True">
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -68,6 +78,7 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+        -->
         </Grid>        
 </Controls:MetroWindow>
    

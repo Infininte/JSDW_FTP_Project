@@ -28,6 +28,7 @@ namespace FTPBoss
         {
             InitializeComponent();
 
+            /*
             Contents dirContents = new Contents("", "");
 
             List<Item> dirItems = dirContents.GetItems();
@@ -38,14 +39,37 @@ namespace FTPBoss
                 test += dirItems[i].FileName + " (" + dirItems[i].FileSize + ")\r\n";
             }
 
+            
             ObservableCollection<remoteItem> remoteDirectoryList = new ObservableCollection<remoteItem>();
             remoteDirectories dirObject = new remoteDirectories();
             dirObject.populateList(remoteDirectoryList);
+            */
 
             getRootDirectories();
 
+            getFTPRootDirectory();
+
         }
 
+        private void getFTPRootDirectory()
+        {
+            Contents dirContents = new Contents("", "");
+
+            List<Item> dirItems = dirContents.GetItems();
+
+            RemoteDirectoryItem rootDir = new RemoteDirectoryItem() { Name = "/" };
+
+            Debug.WriteLine("************************************FSDFSDF*SDFSFSDFSDF**");
+
+            foreach (Item item in dirItems)
+            {
+                RemoteDirectoryItem ftpRootItem = new RemoteDirectoryItem() { Name = item.FileName };
+                rootDir.RemoteDirectoryItems.Add(ftpRootItem);
+                Debug.WriteLine(ftpRootItem.Name);
+            }
+
+            ServerDirectoryBrowser.ItemsSource = rootDir.RemoteDirectoryItems;
+        }
 
         private void getRootDirectories()
         {
@@ -134,7 +158,7 @@ namespace FTPBoss
         public ObservableCollection<DirectoryItem> DirectoryItems { get; set; }
     }
 
-
+    /*
     //This is how I learned Binding it may be (and probably is) possible to write it
     //  like Scott did above.
 
@@ -171,4 +195,17 @@ namespace FTPBoss
         public string Type { get; set; }
     }
 
+    */
+
+    public class RemoteDirectoryItem
+    {
+        public RemoteDirectoryItem()
+        {
+            this.RemoteDirectoryItems = new ObservableCollection<RemoteDirectoryItem>();
+        }
+
+        public string Name { get; set; }
+
+        public ObservableCollection<RemoteDirectoryItem> RemoteDirectoryItems { get; set; }
+    }
 }
