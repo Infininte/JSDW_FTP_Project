@@ -39,3 +39,5 @@ C:\Users\Walter\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\bin\Debug\MahApps.
 C:\Users\Dane\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\bin\Debug\FTPBoss.exe.config
 C:\Users\Dane\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\obj\Debug\FTPBoss.exe
 C:\Users\Dane\Source\Repos\JSDW_FTP_Project\FTPBoss\FTPBoss\obj\Debug\FTPBoss.pdb
+C:\Users\Jordan\Source\Repos\JSDW_FTP_Project2\FTPBoss\FTPBoss\obj\Debug\FTPBoss.exe
+C:\Users\Jordan\Source\Repos\JSDW_FTP_Project2\FTPBoss\FTPBoss\obj\Debug\FTPBoss.pdb
