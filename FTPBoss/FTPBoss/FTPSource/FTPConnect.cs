@@ -723,9 +723,9 @@ namespace FTPBoss
 
     class Program2
     {
-        static string Host = "pftp.bugs3.com",
-                      User = "u631161179.ftp",
-                      Pass = "testftp1";
+        static string Host = "pftp.bugs3.com", //"ftp.drwestfall.net",
+                      User = "u631161179.ftp", // "ftp04",
+                      Pass = "testftp1";//"project";
 
         static string currentFtpDir    = "",
                       currentLocalDir  = "",

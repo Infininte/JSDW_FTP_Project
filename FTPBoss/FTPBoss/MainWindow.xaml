@@ -22,7 +22,6 @@
     </Window.Resources>
     -->
     
-   
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
             
@@ -56,7 +55,12 @@
                 </TreeView>
          
         <Label Grid.Row="1" Grid.Column="1" Content="Server" FontSize="22" Margin="10 0 0 0"/>
-        <ListBox Margin="10 0 0 0" Grid.Row="2" Grid.Column="1" Name="ServerDirectoryBrowser">
+        <ListBox Margin="10 0 0 0" Grid.Row="2" Grid.Column="1" Name="ServerDirectoryBrowser" MouseDoubleClick="remoteDirBrowser_MouseDoubleClick">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Create Directory" Click="createDirectory_Click"/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type  self:RemoteDirectoryItem}" >
                     <TextBlock Text="{Binding Name}"/>

@@ -24,8 +24,9 @@ namespace FTPBoss
     /// </summary>
     public partial class MainWindow
     {
+        Program2 ftpConnection = new Program2;
         public MainWindow()
-        {
+        { 
             InitializeComponent();
 
             /*
@@ -49,28 +50,62 @@ namespace FTPBoss
 
             getFTPRootDirectory();
 
+            //RemoteDirectoryItem directory = getRemoteDirectory("/", "new");
+
+            //ServerDirectoryBrowser.ItemsSource = directory.RemoteDirectoryItems;
         }
 
         private void getFTPRootDirectory()
         {
+            /*
             Contents dirContents = new Contents("", "");
 
             List<Item> dirItems = dirContents.GetItems();
 
-            RemoteDirectoryItem rootDir = new RemoteDirectoryItem() { Name = "/" };
+            RemoteDirectoryItem rootDir = new RemoteDirectoryItem() { Name = "", Path = "/" };
 
             Debug.WriteLine("************************************FSDFSDF*SDFSFSDFSDF**");
 
             foreach (Item item in dirItems)
             {
-                RemoteDirectoryItem ftpRootItem = new RemoteDirectoryItem() { Name = item.FileName };
+                RemoteDirectoryItem ftpRootItem = new RemoteDirectoryItem() { Name = item.FileName, IsDirectory = item.Directory };
                 rootDir.RemoteDirectoryItems.Add(ftpRootItem);
-                Debug.WriteLine(ftpRootItem.Name);
+                //Debug.WriteLine(ftpRootItem.Name + "," + ftpRootItem.IsDirectory);
             }
+            */
+
+            RemoteDirectoryItem rootDir = getRemoteDirectory("", "");
 
             ServerDirectoryBrowser.ItemsSource = rootDir.RemoteDirectoryItems;
         }
 
+        //Gets remote directory contents of a directory and then creates and returns a RemoteDirectoryItem
+        //
+        private RemoteDirectoryItem getRemoteDirectory(string path, string name)
+        {
+
+            Contents dirConents = new Contents(path, name);
+
+            List<Item> dirItems = dirConents.GetItems();
+
+            RemoteDirectoryItem directory = new RemoteDirectoryItem() {Name = name};
+            
+            foreach (Item item in dirItems)
+            {
+                Debug.WriteLine("Contents Item Name:    " + item.FileName);
+                string itemPath = path + "/" + name;
+
+                RemoteDirectoryItem ftpItem = new RemoteDirectoryItem() { Name = item.FileName, IsDirectory = item.Directory, Path = itemPath };
+                directory.RemoteDirectoryItems.Add(ftpItem);
+
+                Debug.WriteLine("Remote Dir Item Name:  " + ftpItem.Name + "," + ftpItem.Path);
+            }
+
+            return directory;
+        }
+
+
+        //Gets the root directories on the local machine and add them to the local directory browser tree
         private void getRootDirectories()
         {
 
@@ -91,6 +126,7 @@ namespace FTPBoss
             localDirectoryBrowser.Items.Add(rootDir);
         }
 
+        //Gets local files i na specified path and adds them to the sepcified parent directory
         private void getFiles(string path, DirectoryItem parent)
         {
             var files = Directory.EnumerateFiles(path);
@@ -99,6 +135,7 @@ namespace FTPBoss
                 parent.DirectoryItems.Add(new DirectoryItem() { Name = Path.GetFileName(file), Path = file });
         }
 
+        //Gets local directories in a specified path and adds them to the sepcified parent directory
         private void getDirectories(string path, DirectoryItem parent)
         {
             var directories = Directory.EnumerateDirectories(path);
@@ -117,17 +154,17 @@ namespace FTPBoss
                     Console.WriteLine(e.Message);
                 }
                 
-
                 parent.DirectoryItems.Add(newDirectory);
-                //Debug.WriteLine(directory);
             }
         }
 
+        //Checks if a local directory is empty
         private bool IsDirectoryEmpty(string path)
         {
             return !Directory.EnumerateFileSystemEntries(path).Any();
         }
 
+        //Handles the event when the treeview item in the local directory tree browser is exanded
         private void TreeViewItemExpanded(object sender, RoutedEventArgs e)
         {
             TreeViewItem treeItem = e.OriginalSource as TreeViewItem;
@@ -139,7 +176,37 @@ namespace FTPBoss
                 getDirectories(directory.Path, directory);
                 getFiles(directory.Path, directory);
             }
-            
+        }
+
+
+        //Handles clicking events in the listbox that displays the remote directory items
+        private void remoteDirBrowser_MouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            if(ServerDirectoryBrowser.SelectedItem != null)
+            {
+                //Debug.WriteLine(ServerDirectoryBrowser.SelectedItem.ToString());
+
+                RemoteDirectoryItem directoryItem = ServerDirectoryBrowser.SelectedItem as RemoteDirectoryItem;
+
+                Debug.WriteLine(directoryItem.Path);
+                
+                //Debug.WriteLine(dir0.ectory.Name + "," + directory.IsDirectory);
+
+                if(directoryItem.IsDirectory)
+                {
+                    //Contents dirContents = new Contents("", directoryItem.Name);
+                    RemoteDirectoryItem directory = getRemoteDirectory(directoryItem.Path, directoryItem.Name);
+
+                    ServerDirectoryBrowser.ItemsSource = directory.RemoteDirectoryItems;
+                    
+                }
+            }
+        }
+
+        private void createDirectory_Click(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("I just got clicked out!");
+
         }
     }
 
@@ -197,6 +264,7 @@ namespace FTPBoss
 
     */
 
+    //Class used for local storing and displaying of FTP server directories and files
     public class RemoteDirectoryItem
     {
         public RemoteDirectoryItem()
@@ -204,8 +272,15 @@ namespace FTPBoss
             this.RemoteDirectoryItems = new ObservableCollection<RemoteDirectoryItem>();
         }
 
+        //Name of this directory item
         public string Name { get; set; }
 
+        public bool IsDirectory { get; set; }
+
+        //This is the path to the directory of this item -- not the actual item. Actual path is: Path + Name.
+        public string Path { get; set; }
+
+        //A list of the files and directories in this directory
         public ObservableCollection<RemoteDirectoryItem> RemoteDirectoryItems { get; set; }
     }
 }
