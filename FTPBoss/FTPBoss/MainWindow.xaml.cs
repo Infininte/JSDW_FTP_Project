@@ -24,24 +24,12 @@ namespace FTPBoss
     /// </summary>
     public partial class MainWindow
     {
+        //Remote directory object
+        remoteDirectories dirObject = new remoteDirectories();
+
         public MainWindow()
         {
             InitializeComponent();
-
-            Contents dirContents = new Contents("", "");
-
-            List<Item> dirItems = dirContents.GetItems();
-
-            string test = "";
-            for (int i = 0; i < dirItems.Count; ++i )
-            {
-                test += dirItems[i].FileName + " (" + dirItems[i].FileSize + ")\r\n";
-            }
-
-            ObservableCollection<remoteItem> remoteDirectoryList = new ObservableCollection<remoteItem>();
-            remoteDirectories dirObject = new remoteDirectories();
-            dirObject.populateList(remoteDirectoryList);
-
             getRootDirectories();
 
         }
@@ -117,6 +105,25 @@ namespace FTPBoss
             }
             
         }
+
+        private void remoteListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            //this.Resources["remotDir"] = new remoteDirectories();
+            Debug.WriteLine(this.Resources["remoteDir"]);
+            TextBlock tempBlock = e.OriginalSource as TextBlock;
+            //Debug.WriteLine(tempBlock.Text);
+
+            foreach (remoteItem item in dirObject.dirList)
+            {
+                if (item.Name == tempBlock.Text && item.IsDirectory)
+                {
+                    dirObject.changeDir(dirObject.path, item.Name);
+                    this.Resources["remoteDir"] = dirObject;
+                }
+            }
+
+        }
+        
     }
 
 
@@ -141,25 +148,34 @@ namespace FTPBoss
     //Class to create and give the directory ObservableCollection
     public class remoteDirectories
     {
+        public string path = "";
+        public ObservableCollection<remoteItem> dirList = new ObservableCollection<remoteItem>();
+
+        public ObservableCollection<remoteItem>;
+
+        public remoteDirectories()
+        {
+            changeDir("", "");
+        }
+
         public ObservableCollection<remoteItem> getDirectories()
         {
-            ObservableCollection<remoteItem> dirList = new ObservableCollection<remoteItem>();
-            populateList(dirList);
             return dirList;
         }
 
         //This may be streamlined by moving it directly into Dane's GetItems() method, but for now it works
-        public void populateList(ObservableCollection<remoteItem> dirList)
+        public void changeDir(string tempPath, string tempName)
         {
-            Contents dirContents = new Contents("", "");
-
+            Contents dirContents = new Contents(tempPath, tempName);
             List<Item> dirItems = dirContents.GetItems();
 
             for (int i = 0; i < dirItems.Count; ++i)
             {
-                dirList.Add(new remoteItem { Name=dirItems[i].FileName, Type=dirItems[i].FileType});
+                dirList.Add(new remoteItem { Name=dirItems[i].FileName, Type=dirItems[i].FileType, IsDirectory=dirItems[i].Directory});
             }
+            path += "/" + tempName;
         }
+
     }
 
     //My own item for remote connection. This should really be one and the same with Scott's item, but his initialized
@@ -169,5 +185,7 @@ namespace FTPBoss
     {
         public string Name { get; set; }
         public string Type { get; set; }
+        public bool IsDirectory { get; set; }
+
     }
 }

@@ -42,7 +42,7 @@
             </GroupBox>
 
             <GroupBox Grid.Column="1" Grid.Row="1" Header="Server">
-                <ListView ItemsSource="{Binding Source={StaticResource remoteDir}}" IsSynchronizedWithCurrentItem="True">
+                <ListView x:Name="remoteListView" ItemsSource="{Binding Source={DynamicResource remoteDir}}" IsSynchronizedWithCurrentItem="True" MouseDoubleClick="remoteListView_MouseDoubleClick">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid>

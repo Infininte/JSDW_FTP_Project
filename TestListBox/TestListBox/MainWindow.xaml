@@ -1,4 +1,4 @@
-﻿<Window x:Class="TestListBox.MainWindow"
+﻿<Window x:Name="Window" x:Class="TestListBox.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:svc="clr-namespace:TestListBox"
@@ -7,9 +7,17 @@
         <Grid.Resources>
             <ObjectDataProvider x:Key="persons" ObjectType="{x:Type svc:PersonService}" MethodName="GetPersonList"/>
         </Grid.Resources>
-        
-        <TextBlock></TextBlock>
-        <ListView x:Name="lvPersons" ItemsSource="{Binding Source={StaticResource persons}}" IsSynchronizedWithCurrentItem="True">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.RowSpan="2" Grid.ColumnSpan="2"></TextBlock>
+        <ListView x:Name="lvPersons" ItemsSource="{Binding Source={StaticResource persons}}" IsSynchronizedWithCurrentItem="True" Grid.RowSpan="2" SelectionChanged="lvPersons_SelectionChanged" Grid.ColumnSpan="2">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Width="500" VerticalAlignment="Center">
@@ -25,5 +33,5 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        </Grid>
+    </Grid>
 </Window>
