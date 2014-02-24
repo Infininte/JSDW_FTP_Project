@@ -24,7 +24,7 @@ namespace FTPBoss
     /// </summary>
     public partial class MainWindow
     {
-        Program2 ftpConnection = new Program2;
+        Program2 ftpConnection = new Program2();
         public MainWindow()
         { 
             InitializeComponent();
