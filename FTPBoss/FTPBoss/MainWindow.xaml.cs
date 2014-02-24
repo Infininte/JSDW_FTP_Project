@@ -16,6 +16,8 @@ using System.IO;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;                     // *** delete this
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace FTPBoss
 {
@@ -24,7 +26,6 @@ namespace FTPBoss
     /// </summary>
     public partial class MainWindow
     {
-        Program2 ftpConnection = new Program2();
         public MainWindow()
         { 
             InitializeComponent();
@@ -53,6 +54,9 @@ namespace FTPBoss
             //RemoteDirectoryItem directory = getRemoteDirectory("/", "new");
 
             //ServerDirectoryBrowser.ItemsSource = directory.RemoteDirectoryItems;
+
+            Debug.WriteLine("Item Source: " + ServerDirectoryBrowser.ItemsSource.ToString());
+
         }
 
         private void getFTPRootDirectory()
@@ -88,19 +92,55 @@ namespace FTPBoss
 
             List<Item> dirItems = dirConents.GetItems();
 
-            RemoteDirectoryItem directory = new RemoteDirectoryItem() {Name = name};
+            RemoteDirectoryItem directory = new RemoteDirectoryItem() {Name = name, Path= path};
             
             foreach (Item item in dirItems)
             {
-                Debug.WriteLine("Contents Item Name:    " + item.FileName);
-                string itemPath = path + "/" + name;
+                //Debug.WriteLine("Contents Item Name:    " + item.FileName);
 
-                RemoteDirectoryItem ftpItem = new RemoteDirectoryItem() { Name = item.FileName, IsDirectory = item.Directory, Path = itemPath };
+                string itemPath = "";
+
+               if(name != "..")
+               { 
+                    itemPath = path + "/" + name;
+
+                    if(path == "/")
+                        itemPath = path + name;
+               }
+               else
+               {
+                   if(path != "/")
+                   {
+                       try
+                       {
+                           int index = path.LastIndexOf("/");
+                           if(index != -1)
+                           {
+                                itemPath = path.Substring(0, index);
+                           }
+                       }
+                       catch(Exception e)
+                       {
+                           Debug.WriteLine(e.Message);
+                       }
+                        
+                   }
+               }
+
+                RemoteDirectoryItem ftpItem = new RemoteDirectoryItem() { Name = item.FileName, IsDirectory = item.Directory, Path = itemPath, ParentPath = path };
                 directory.RemoteDirectoryItems.Add(ftpItem);
 
-                Debug.WriteLine("Remote Dir Item Name:  " + ftpItem.Name + "," + ftpItem.Path);
+                Debug.WriteLine("Remote Dir Item Name:  " + ftpItem.Name + ", " + ftpItem.Path + ", " + ftpItem.ParentPath);
             }
 
+            try 
+            { 
+                Debug.WriteLine("Current Directory: " + directory.RemoteDirectoryItems.Last().Path);
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
             return directory;
         }
 
@@ -203,11 +243,21 @@ namespace FTPBoss
             }
         }
 
-        private void createDirectory_Click(object sender, RoutedEventArgs e)
+        private async void createDirectory_Click(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("I just got clicked out!");
+            var result = await this.ShowInputAsync("Create Directory", "Enter Directory Name");
 
-        }
+            if (result == null)
+                return;
+
+            ObservableCollection<RemoteDirectoryItem> dirItems = ServerDirectoryBrowser.ItemsSource as ObservableCollection<RemoteDirectoryItem>;
+
+            Debug.WriteLine("New Dir Path: " + dirItems.Last().Path + "New Dir Name: " + result);
+
+            Program2.CreateDirectory(dirItems.Last().Path, "/" +  result);
+
+            //await this.ShowMessageAsync("Hello", "Hello" + dirItems.Last().Path + "!");
+        } 
     }
 
 
@@ -279,6 +329,8 @@ namespace FTPBoss
 
         //This is the path to the directory of this item -- not the actual item. Actual path is: Path + Name.
         public string Path { get; set; }
+
+        public string ParentPath { get; set; }
 
         //A list of the files and directories in this directory
         public ObservableCollection<RemoteDirectoryItem> RemoteDirectoryItems { get; set; }

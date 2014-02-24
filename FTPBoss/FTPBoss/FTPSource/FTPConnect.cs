@@ -866,7 +866,7 @@ namespace FTPBoss
             }
         }
 
-        static bool DeleteDirectory(string path, string dirName)
+        public static bool DeleteDirectory(string path, string dirName)
         {
             // Check if directory exists
             if (!DirectoryExists(path, dirName))
@@ -932,7 +932,7 @@ namespace FTPBoss
                  * */
         }
 
-        static bool DeleteFile2(string path, string fileName)
+        public static bool DeleteFile2(string path, string fileName)
         {
             Console.WriteLine("DeleteFile('" + path + "', '" + fileName + "')");
 
@@ -957,7 +957,7 @@ namespace FTPBoss
             }
         }
 
-        static bool ChangeFilePermission(string path, string fileName, int permission)
+        public static bool ChangeFilePermission(string path, string fileName, int permission)
         {
             FtpSocket socket = new FtpSocket(Host, User, Pass, 21);
 
@@ -970,7 +970,7 @@ namespace FTPBoss
             return true;
         }
 
-        static bool CreateDirectory(string path, string dirName)
+        public static bool CreateDirectory(string path, string dirName)
         {
             try
             {
