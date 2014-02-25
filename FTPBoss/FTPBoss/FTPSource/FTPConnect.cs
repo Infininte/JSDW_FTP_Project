@@ -1396,6 +1396,7 @@ namespace FTPBoss
 
                 stream.Close();
                 filestream.Close();
+                System.Windows.MessageBox.Show("Completed upload!", "Dude");
 
                 /*
                 StreamReader sourceStream = new StreamReader(fromPath + fromFile);
