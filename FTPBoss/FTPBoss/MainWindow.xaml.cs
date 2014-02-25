@@ -30,6 +30,7 @@ namespace FTPBoss
         { 
             InitializeComponent();
 
+            Program2.Upload("C:/", "pdf.pdf", "", "pdf.pdf");
 
             //System.Windows.MessageBox.Show("1 - " + Utility.FormatPath("/", ""));
             //System.Windows.MessageBox.Show("2 - " + Utility.FormatPath("/new", ""));

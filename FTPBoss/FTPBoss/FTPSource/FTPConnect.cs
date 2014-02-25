@@ -1178,26 +1178,58 @@ namespace FTPBoss
             return returnValue;
         }
 
-        static bool Upload(string fromPath, string fromFile, string toPath, string toFile)
+        public static bool Upload(string fromPath, string fromFile, string toPath, string toFile)
         {
             // Check if from file exists
             if (!File.Exists(fromPath + fromFile))
             {
                 Console.WriteLine("File '" + toFile + "' does not exist on local drive!");
-                return false;
+                //return false;
             }
 
             // Check if to file already exists
             if (File.Exists(fromPath + fromFile))
             {
                 Console.WriteLine("File '" + toFile + "' already exists on server!");
-                return false;
+                //return false;
             }
 
             try
             {
-                FtpWebRequest request = GetRequest(RequestMethods.Upload, toPath + toFile);
+                FileInfo fileinfo = new FileInfo(fromPath + fromFile); //added
 
+                FtpWebRequest request = GetRequest(RequestMethods.Upload, toPath + toFile);
+                request.KeepAlive = false; //added
+                request.ContentLength = fileinfo.Length; //added
+
+                /* Added: buffer size */
+                int bufferLength = 2048;
+                byte[] buffer = new byte[bufferLength];
+                int contentLength;
+
+                /* Added File/transfer streams */
+                FileStream filestream = fileinfo.OpenRead();
+                Stream stream = request.GetRequestStream();
+                contentLength = filestream.Read(buffer, 0, bufferLength);
+
+                /* loop through streaming */
+                long loadSize = 0;
+                while (contentLength != 0)
+                {
+                    // Write Content from the file stream to the FTP Upload Stream
+                    loadSize += contentLength;
+                    Console.Write(".");
+
+                    stream.Write(buffer, 0, contentLength);
+                    contentLength = filestream.Read(buffer, 0, bufferLength);
+
+                }
+
+                stream.Close();
+                filestream.Close();
+                System.Windows.MessageBox.Show("Completed upload!", "Dude");
+
+                /*
                 StreamReader sourceStream = new StreamReader(fromPath + fromFile);
                 byte[] fileContents = Encoding.UTF8.GetBytes(sourceStream.ReadToEnd());
                 sourceStream.Close();
@@ -1208,10 +1240,10 @@ namespace FTPBoss
                 requestStream.Close();
 
                 FtpWebResponse response = (FtpWebResponse)request.GetResponse();
-
+                
                 Console.WriteLine("Upload File Complete, status {0}", response.StatusDescription);
                 response.Close();
-
+                */ 
             }
             catch (Exception ex)
             {
