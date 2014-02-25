@@ -87,12 +87,14 @@ namespace FTPBoss
 
         public static string FormatPath(string path, string name)
         {
+            // edited
             path = path.TrimEnd(Path.DirectorySeparatorChar);
 
             if (path.Length > 0)
                 path += "/";
 
-            return path + name;
+            path += name;
+            return path.Replace("//", "/");
         }
     }
 
@@ -516,12 +518,17 @@ namespace FTPBoss
         {
             total = fileCount = dirCount = 0;
 
-            // check if dir exists, except root directory ("")
+            if (dirName == ".." || dirName == ".")
+                dirName = "";
+
+            //System.Windows.MessageBox.Show("Contents() Path: '"+path+"'; dirName: '"+dirName+"'");
+
+            /* check if dir exists, except root directory ("")
             if (!Program2.DirectoryExists(path, dirName) && (path + dirName) != "")
             {
-                Console.WriteLine("Could not instantiate Contents(): '"+ dirName +"' does not exist");
-                return;
-            }
+                System.Windows.MessageBox.Show("Could not instantiate Contents(): '" + dirName + "' does not exist");
+                //return;
+            }*/
 
             try
             {
@@ -532,16 +539,44 @@ namespace FTPBoss
 
                 while (line != null)
                 {
-                    line = reader.ReadLine();
                     this.Add(line);
+                    line = reader.ReadLine();
                 }
+
+                AddExtraNavDirs();
 
                 reader.Close();
                 response.Close();
             }
             catch (Exception ex)
             {
+                System.Windows.MessageBox.Show("Error: " + ex.Message);
                 Console.WriteLine("ERROR: " + ex.Message);
+            }
+        }
+
+        /* ADDED */
+        public void AddExtraNavDirs()
+        {
+            bool dot = false,       // .  (maybe obsolete)
+                 dotdot = false;    // .. (previous directory)
+
+            for (int i = 0; i < Items.Count; ++i)
+            {
+                if (Items[i].FileName == ".")
+                    dot = true;
+                else if (Items[i].FileName == "..")
+                    dotdot = true;
+            }
+
+            if (!dot)
+            {
+                //Add(".", 0, "", new DateTime(), 0, true); // Obsolete?
+            }
+
+            if(!dotdot)
+            {
+                Add("..", 0, "", new DateTime(), 0, true);
             }
         }
         
@@ -600,6 +635,8 @@ namespace FTPBoss
         /* MODIFIED */
         public bool Add(string line)
         {
+            // edited
+
             if (line == null)
                 return false;
                                  // @"^([d-])([rwxt-]{3}){3}\s+\d{1,}\s+.*?(\d{1,})\s+(\w+\s+\d{1,2}\s+(?:\d{4})?)(\d{1,2}:\d{2})?\s+(.+?)\s?$"
@@ -654,15 +691,15 @@ namespace FTPBoss
                                     directory
                                 ));
 
-            if (filename != "..")
-            {
+            //if (filename != "..")
+            //{
                 ++this.total;
 
                 if (directory)
                     ++this.dirCount;
                 else
                     ++this.fileCount;
-            }
+            //}
 
             return true;
         }
@@ -672,15 +709,15 @@ namespace FTPBoss
         {
             this.Items.Add(new Item(iName, iSize, iType, iModified, iPermissions, iDirectory));
 
-            if (iName != "..")
-            {
+            //if (iName != "..")
+            //{
                 ++this.total;
 
                 if (iDirectory)
                     ++this.dirCount;
                 else
                     ++this.fileCount;
-            }
+            //}
 
             return true;
         }
@@ -723,9 +760,15 @@ namespace FTPBoss
 
     class Program2
     {
-        static string Host = "pftp.bugs3.com", //"ftp.drwestfall.net",
-                      User = "u631161179.ftp", // "ftp04",
-                      Pass = "testftp1";//"project";
+        ///*
+        static string Host = "ftp.drwestfall.net",
+                      User = "ftp04",
+                      Pass = "project";
+        /*/
+        static string Host = "pftp.bugs3.com",
+                      User = "u631161179.ftp",
+                      Pass = "testftp1";
+        //*/
 
         static string currentFtpDir    = "",
                       currentLocalDir  = "",
@@ -766,11 +809,12 @@ namespace FTPBoss
         /* Utility Functions */
         static Contents GetContents(string path, string dirName)
         {
+            /*
             if (!DirectoryExists(path, dirName))
             {
                 Console.WriteLine("Directory does not exist!");
                 return null;
-            }
+            }*/
 
             return new Contents(path, dirName);
         }
@@ -868,12 +912,12 @@ namespace FTPBoss
 
         public static bool DeleteDirectory(string path, string dirName)
         {
-            // Check if directory exists
+            /* Check if directory exists
             if (!DirectoryExists(path, dirName))
             {
                 Console.WriteLine("Directory '" + dirName + "' does not exist!");
                 return false;
-            }
+            }*/
 
             // Don't delete the root
             if ((path + dirName) == "")
@@ -987,11 +1031,14 @@ namespace FTPBoss
             }
         }
 
+        /*
         public static bool DirectoryExists(string path, string dirName)
         {
-            Console.WriteLine("DirectoryExists('" + path + "', '" + dirName + "')");
-
+            // edited
             bool returnValue = false;
+
+            System.Windows.MessageBox.Show("DirectoryExists('"+path+"','"+dirName+"')");
+
 
             try
             {
@@ -1001,9 +1048,15 @@ namespace FTPBoss
                 string line = reader.ReadLine();
                 while (line != null)
                 {
-                    Console.WriteLine("DirName: " + dirName + "; Line: " + line);
+                    if (dirName == "")
+                        break;
 
-                    if (dirName == line)
+                    if (line.Length > 0 && line[0] != '/')
+                        line = "/" + line;
+
+                    System.Windows.MessageBox.Show(Utility.FormatPath(path, dirName) + " == " + line);
+
+                    if (Utility.FormatPath(path, dirName) == line)
                     {
                         returnValue = true;
                         break;
@@ -1017,11 +1070,12 @@ namespace FTPBoss
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error in DirectoryExists(): " + ex.Message.ToString());
+                System.Windows.MessageBox.Show("Error in DirectoryExists(): " + ex.Message.ToString());
             }
 
             return returnValue;
         }
+        */
 
         static bool Rename(string path, string oldName, string newName, int type = Utility.FILE)
         {
@@ -1043,7 +1097,7 @@ namespace FTPBoss
             }
             else if (type == Utility.DIR)
             {
-                // Check if current directory exists
+                /* Check if current directory exists
                 if (!DirectoryExists(path, oldName))
                 {
                     Console.WriteLine("Directory '" + oldName + "' does not exist!");
@@ -1055,7 +1109,7 @@ namespace FTPBoss
                 {
                     Console.WriteLine("Directory '" + newName + "' already exists!");
                     return false;
-                }
+                }*/
             }
             else
                 return false;
