@@ -31,6 +31,13 @@ namespace FTPBoss
         public MainWindow()
         { 
             InitializeComponent();
+            Program2.credProfiles = new CredentialProfiles();
+            Program2.credProfiles.LoadFromFile(Program2.CredentialFile);
+            //Program2.credProfiles.Add("Westfall", "drwestfall.net", "ftp04", "project", "21");
+            //Program2.credProfiles.Add("bugs3", "pftp.bugs3.com", "u631161179.ftp", "testftp1", "21");
+            //Program2.credProfiles.SaveToFile(Program2.CredentialFile);
+
+            
 
             Program2.Upload("C:/", "pdf.pdf", "", "pdf.pdf");
 
