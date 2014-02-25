@@ -349,6 +349,12 @@ namespace FTPBoss
         {
             Debug.WriteLine("Finished Uploading!");
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ConnectionManagement newWin = new ConnectionManagement();
+            newWin.Show();
+        }
     }
 
 
