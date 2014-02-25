@@ -43,6 +43,7 @@
         <ToolBarPanel Orientation="Horizontal">
             <Button>Button 2</Button>
             <Button>Button 2</Button>
+            <TextBlock Name="DaneTest" Width="500" Text="Test Data Delete When finished."/>
         </ToolBarPanel>
 
         <Label Grid.Row="1" Grid.Column="0" Content="Local" FontSize="22" Margin="10 0 0 0"/>
