@@ -23,6 +23,15 @@ namespace FTPBoss
         public ConnectionManagement()
         {
             InitializeComponent();
+
+            string[] profiles = Program2.credProfiles.GetProfiles();
+
+            string profileList = "";
+            for (int i = 0; i < profiles.Count(); ++i)
+            {
+                profileList += profiles[i] + "\r\n";
+                listbox_credentialprofiles.Items.Add(profiles[i]);
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
