@@ -136,12 +136,12 @@ namespace FTPBoss
             Program2.PrevDirectory = Program2.CurrentDirectory;
             Program2.CurrentDirectory = "";
 
-            textbox_tester.Text = Program2.CurrentDirectory;
-            textbox_tester2.Text = Program2.PrevDirectory;
+            //textbox_tester.Text = Program2.CurrentDirectory;
+            //textbox_tester2.Text = Program2.PrevDirectory;
 
 
             navigation.AddRoot();
-            navbar_text.Text = navigation.ToString();
+            //navbar_text.Text = navigation.ToString();
 
             RemoteDirectoryItem rootDir = getRemoteDirectory("", "");
 
@@ -317,7 +317,7 @@ namespace FTPBoss
                         navigation.Add(directoryItem.Name);
                     }
 
-                    navbar_text.Text = navigation.ToString();
+                    //navbar_text.Text = navigation.ToString();
 
                     // uncomment this when ready
                     //directory = getRemoteDirectory(navigation.ToString(), "");
