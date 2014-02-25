@@ -33,7 +33,7 @@ namespace FTPBoss
         public MainWindow()
         { 
             InitializeComponent();
-            
+            App.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
             Program2.credProfiles = new CredentialProfiles();
             Program2.credProfiles.LoadFromFile(Program2.CredentialFile);
             //Program2.credProfiles.Add("Westfall", "drwestfall.net", "ftp04", "project", "21");
@@ -84,6 +84,7 @@ namespace FTPBoss
 
         ~MainWindow()
         {
+
             
             // close ConnectionManagement window
         }
