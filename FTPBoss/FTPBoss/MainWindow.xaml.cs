@@ -78,13 +78,13 @@ namespace FTPBoss
             bgwU.WorkerSupportsCancellation = true;
             bgwU.ProgressChanged += new ProgressChangedEventHandler(bgw_ProgressChanged);
             bgwU.DoWork += new DoWorkEventHandler(bgw_Upload);
-            bgwU.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgw_RunWorkerCompleted);
+            bgwU.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgw_UploadCompleted);
 
             bgwD.WorkerReportsProgress = true;
             bgwD.WorkerSupportsCancellation = true;
             bgwD.ProgressChanged += new ProgressChangedEventHandler(bgw_ProgressChanged);
             bgwD.DoWork += new DoWorkEventHandler(bgw_Download);
-            bgwD.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgw_RunWorkerCompleted);
+            bgwD.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgw_DownloadCompleted);
 
             
         }
@@ -462,9 +462,17 @@ namespace FTPBoss
             progressBar.Value = e.ProgressPercentage;
         }
 
-        private void bgw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private async void bgw_UploadCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            Debug.WriteLine("Finished loading");
+            //Debug.WriteLine("Finished loading");
+            var controller = await this.ShowMessageAsync("Done!", "Upload finished!");
+            progressBar.Value = 0;
+        }
+
+        private async void bgw_DownloadCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //Debug.WriteLine("Finished loading");
+            //var controller = await this.ShowMessageAsync("Done!", "Download finished!");
             progressBar.Value = 0;
         }
 
@@ -474,11 +482,11 @@ namespace FTPBoss
             newWin.Show();
         }
 
-        private void Button_Connect(object sender, RoutedEventArgs e)
+        private async void Button_Connect(object sender, RoutedEventArgs e)
         {
             if(Program2.Host.Length == 0 || Program2.User.Length == 0 || Program2.Pass.Length == 0)
             {
-                System.Windows.MessageBox.Show("You need to log in first!");
+                var controller = await this.ShowMessageAsync("Wait!", "You need to log in first!");
                 return;
             }
 
