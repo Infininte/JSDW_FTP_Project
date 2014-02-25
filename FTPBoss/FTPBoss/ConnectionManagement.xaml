@@ -37,7 +37,7 @@
         </ListBox>
         <Label Content="Credential Profiles" HorizontalAlignment="Left" Margin="162,66,0,0" VerticalAlignment="Top"/>
         <Button Content="Select!" HorizontalAlignment="Left" Margin="162,197,0,0" VerticalAlignment="Top" Width="55"/>
-        <Button Content="Delete!" HorizontalAlignment="Left" Margin="227,197,0,0" VerticalAlignment="Top" Width="55"/>
+        <Button Content="Delete!" HorizontalAlignment="Left" Margin="227,197,0,0" VerticalAlignment="Top" Width="55" Click="Button_Click_1"/>
         
 
 
