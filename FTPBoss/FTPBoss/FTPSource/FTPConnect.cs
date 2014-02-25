@@ -1379,8 +1379,6 @@ namespace FTPBoss
                     stream.Write(buffer, 0, contentLength);
                     contentLength = filestream.Read(buffer, 0, bufferLength);
 
-                    int progress = (int)(loadSize * 100 / filestream.Length);
-                    MainWindow.bgw.ReportProgress(progress);
                 }
 
                 stream.Close();
