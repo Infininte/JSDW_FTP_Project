@@ -43,6 +43,7 @@
         <ToolBarPanel Orientation="Horizontal">
             <Button x:Name="button_getCredentials" Content="Credentials" Width="75" Margin="10 0 0 0" Click="Button_Click" Height="20"/>
             <Button x:Name="button_connect" Content="Connect" Width="75" Click="Button_Connect" Height="20" Margin="10 0 0 0"/>
+            <TextBox x:Name="navbar_text" Height="50" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
 
         </ToolBarPanel>
 
@@ -76,6 +77,10 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <ProgressBar Name="progressBar" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" Width="306" Height="30"/>
+        <TextBox x:Name="textbox_tester" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="5,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="136"/>
+        <TextBox x:Name="textbox_tester2" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="170,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="136"/>
+        <Label Content="Previous Dir" Grid.Column="1" HorizontalAlignment="Left" Margin="170,0,0,0" VerticalAlignment="Top"/>
+        <Label Content="Current Dir" Grid.Column="1" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top"/>
 
         <!--
         <ListView BorderThickness="0" Margin="10 0 0 0" Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Source={StaticResource remoteDir}}" IsSynchronizedWithCurrentItem="True">

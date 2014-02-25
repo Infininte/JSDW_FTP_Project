@@ -932,6 +932,9 @@ namespace FTPBoss
         static public string CredentialFile = AppDomain.CurrentDomain.BaseDirectory + "/credentials.dat";
         static public string Host = "", User = "", Pass = "", Port = "";
 
+        static public string CurrentDirectory = "";
+        static public string PrevDirectory = "";
+
         static Contents DirectoryContents;
 
         /*
@@ -1079,6 +1082,8 @@ namespace FTPBoss
 
         public static bool DeleteDirectory(string path, string dirName)
         {
+            System.Windows.MessageBox.Show("DeleteDirectory('"+path+"', '"+dirName+"');");
+
             /* Check if directory exists
             if (!DirectoryExists(path, dirName))
             {
@@ -1096,7 +1101,7 @@ namespace FTPBoss
             Contents contents = new Contents(path, dirName);
 
             // If no files or directories, delete directory
-            if (contents.Count() == 0)
+            if (contents.Count() <= 1)
             {
                 try
                 {
@@ -1126,7 +1131,7 @@ namespace FTPBoss
                     }
                     else // yay, it's a file!
                     {
-                        FTPBoss.Program2.DeleteFile2(path + dirName, items[i].FileName);
+                        FTPBoss.Program2.DeleteFile(path + dirName, items[i].FileName);
                     }
                 }
 
@@ -1143,7 +1148,7 @@ namespace FTPBoss
                  * */
         }
 
-        public static bool DeleteFile2(string path, string fileName)
+        public static bool DeleteFile(string path, string fileName)
         {
             Console.WriteLine("DeleteFile('" + path + "', '" + fileName + "')");
 
@@ -1347,6 +1352,8 @@ namespace FTPBoss
 
         public static bool Upload(string fromPath, string fromFile, string toPath, string toFile)
         {
+            System.Windows.MessageBox.Show("Upload('"+fromPath+"','"+fromFile+"','"+toPath+"','"+toFile+"')");
+
             // Check if from file exists
             if (!File.Exists(fromPath + fromFile))
             {

@@ -22,6 +22,20 @@ using MahApps.Metro.Controls.Dialogs;
 
 namespace FTPBoss
 {
+    public class Nav
+    {
+        private List<string> nav = null;
+        public Nav() { nav = new List<string>(); }
+        public void AddRoot() { nav.Add(""); }
+        public void Add(string dirName) { nav.Add(dirName); }
+        public void Remove() { nav.RemoveAt(nav.Count() - 1); }
+        public string ToString(string separator = "/")
+        {
+            string output = string.Join(separator, nav);
+            return output;
+        }
+    }
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -29,6 +43,8 @@ namespace FTPBoss
     {
         public static BackgroundWorker bgwU = new BackgroundWorker();
         public static BackgroundWorker bgwD = new BackgroundWorker();
+
+        public static Nav navigation = new Nav();
 
         public MainWindow()
         { 
@@ -39,6 +55,8 @@ namespace FTPBoss
             //Program2.credProfiles.Add("Westfall", "drwestfall.net", "ftp04", "project", "21");
             //Program2.credProfiles.Add("bugs3", "pftp.bugs3.com", "u631161179.ftp", "testftp1", "21");
             //Program2.credProfiles.SaveToFile(Program2.CredentialFile);
+
+            // Nav bar!
 
             //System.Windows.ShutdownMode.OnMainWindowClose;
             
@@ -115,6 +133,16 @@ namespace FTPBoss
             }
             */
 
+            Program2.PrevDirectory = Program2.CurrentDirectory;
+            Program2.CurrentDirectory = "";
+
+            textbox_tester.Text = Program2.CurrentDirectory;
+            textbox_tester2.Text = Program2.PrevDirectory;
+
+
+            navigation.AddRoot();
+            navbar_text.Text = navigation.ToString();
+
             RemoteDirectoryItem rootDir = getRemoteDirectory("", "");
 
             ServerDirectoryBrowser.ItemsSource = rootDir.RemoteDirectoryItems;
@@ -125,6 +153,8 @@ namespace FTPBoss
         private RemoteDirectoryItem getRemoteDirectory(string path, string name)
         {
             Contents dirConents = new Contents(path, name);
+
+            System.Windows.MessageBox.Show("Contents: " + dirConents.Count());
 
             List<Item> dirItems = dirConents.GetItems();
 
@@ -266,33 +296,31 @@ namespace FTPBoss
         {
             if(ServerDirectoryBrowser.SelectedItem != null)
             {
-                //Debug.WriteLine(ServerDirectoryBrowser.SelectedItem.ToString());
-
                 RemoteDirectoryItem directoryItem = ServerDirectoryBrowser.SelectedItem as RemoteDirectoryItem;
-
                 Debug.WriteLine(directoryItem.Path);
-                
-                //Debug.WriteLine(dir0.ectory.Name + "," + directory.IsDirectory);
 
+                // Added this to fix navigation incompetence
                 if(directoryItem.IsDirectory)
                 {
-                    System.Windows.MessageBox.Show("Name: " + directoryItem.Name + "; Path: " + directoryItem.Path + "; Parent: " + directoryItem.ParentPath);
-
-                    //Contents dirContents = new Contents("", directoryItem.Name);
-
                     RemoteDirectoryItem directory = null;
-
-                    // This is what's messed up
 
                     if (directoryItem.Name == "..")
                     {
-                        directory = getRemoteDirectory(directoryItem.ParentPath, "");
+                        navigation.Remove();
+                    }
+                    else if (directoryItem.Name == ".")
+                    {
+                        return;
                     }
                     else
                     {
-                        directory = getRemoteDirectory(directoryItem.Path, directoryItem.Name);
+                        navigation.Add(directoryItem.Name);
                     }
 
+                    navbar_text.Text = navigation.ToString();
+
+                    // uncomment this when ready
+                    //directory = getRemoteDirectory(navigation.ToString(), "");
                     
                     ServerDirectoryBrowser.ItemsSource = directory.RemoteDirectoryItems;
                     
@@ -320,7 +348,7 @@ namespace FTPBoss
                 }
                 else
                 {
-                    Program2.DeleteFile2(directoryItem.Path, directoryItem.Name);
+                    Program2.DeleteFile(directoryItem.Path, directoryItem.Name);
                 }
             }
         }
