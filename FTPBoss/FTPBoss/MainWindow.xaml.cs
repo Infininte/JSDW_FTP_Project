@@ -28,18 +28,22 @@ namespace FTPBoss
     public partial class MainWindow
     {
         public static BackgroundWorker bgw = new BackgroundWorker();
+       
+
         public MainWindow()
         { 
             InitializeComponent();
+            
             Program2.credProfiles = new CredentialProfiles();
             Program2.credProfiles.LoadFromFile(Program2.CredentialFile);
             //Program2.credProfiles.Add("Westfall", "drwestfall.net", "ftp04", "project", "21");
             //Program2.credProfiles.Add("bugs3", "pftp.bugs3.com", "u631161179.ftp", "testftp1", "21");
             //Program2.credProfiles.SaveToFile(Program2.CredentialFile);
 
+            //System.Windows.ShutdownMode.OnMainWindowClose;
             
 
-            Program2.Upload("C:/", "pdf.pdf", "", "pdf.pdf");
+            //Program2.Upload("C:/", "pdf.pdf", "", "pdf.pdf");
 
             //System.Windows.MessageBox.Show("1 - " + Utility.FormatPath("/", ""));
             //System.Windows.MessageBox.Show("2 - " + Utility.FormatPath("/new", ""));
@@ -63,7 +67,7 @@ namespace FTPBoss
 
             getRootDirectories();
 
-            getFTPRootDirectory();
+            //getFTPRootDirectory();
 
             //RemoteDirectoryItem directory = getRemoteDirectory("/", "new");
 
@@ -75,8 +79,13 @@ namespace FTPBoss
             bgw.ProgressChanged += new ProgressChangedEventHandler(bgw_ProgressChanged);
             bgw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgw_RunWorkerCompleted);
 
-            Debug.WriteLine("Item Source: " + ServerDirectoryBrowser.ItemsSource.ToString());
+            
+        }
 
+        ~MainWindow()
+        {
+            
+            // close ConnectionManagement window
         }
 
         private void getFTPRootDirectory()
@@ -361,6 +370,17 @@ namespace FTPBoss
         {
             ConnectionManagement newWin = new ConnectionManagement();
             newWin.Show();
+        }
+
+        private void Button_Connect(object sender, RoutedEventArgs e)
+        {
+            if(Program2.Host.Length == 0 || Program2.User.Length == 0 || Program2.Pass.Length == 0)
+            {
+                System.Windows.MessageBox.Show("You need to log in first!");
+                return;
+            }
+
+            getFTPRootDirectory();
         }
     }
 

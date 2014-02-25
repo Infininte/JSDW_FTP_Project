@@ -37,13 +37,14 @@ namespace FTPBoss
         public ConnectionManagement()
         {
             InitializeComponent();
-
             PopulateProfiles();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            Program2.credProfiles.Add(textbox_addprofile.Text, textbox_addhost.Text, textbox_adduser.Text, textbox_addpass.Text, textbox_addport.Text);
 
+            PopulateProfiles();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -58,6 +59,28 @@ namespace FTPBoss
             }
 
            
+        }
+
+        private void button_savecredstofile_Click(object sender, RoutedEventArgs e)
+        {
+            Program2.credProfiles.SaveToFile(Program2.CredentialFile);
+        }
+
+        private void button_load_Click(object sender, RoutedEventArgs e)
+        {
+            int index = listbox_credentialprofiles.SelectedIndex;
+
+            if (index >= 0)
+            {
+                string profile = listbox_credentialprofiles.Items[index].ToString();
+                Program2.credProfiles.SelectProfile(profile);
+
+                Program2.Host = Program2.credProfiles.GetHost();
+                Program2.User = Program2.credProfiles.GetUser();
+                Program2.Pass = Program2.credProfiles.GetPass();
+                Program2.Port = Program2.credProfiles.GetPass();
+                this.Close();
+            }
         }
     }
 }

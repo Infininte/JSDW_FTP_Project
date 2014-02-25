@@ -29,7 +29,7 @@
     
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="80"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="40"></RowDefinition>
@@ -41,11 +41,9 @@
 
         
         <ToolBarPanel Orientation="Horizontal">
-            <Button>Button 2</Button>
-            <Button>Button 2</Button>
-            <TextBlock x:Name="DaneTest" Width="500"><Run Text="Test Data "/><InlineUIContainer>
-            		<Button Content="Credentials" Width="75" Click="Button_Click"/>
-            	</InlineUIContainer><Run Text="Delet"/><Run Text="e When "/><Run Text="finished."/></TextBlock>
+            <Button x:Name="button_getCredentials" Content="Credentials" Width="75" Margin="10 0 0 0" Click="Button_Click" Height="20"/>
+            <Button x:Name="button_connect" Content="Connect" Width="75" Click="Button_Connect" Height="20" Margin="10 0 0 0"/>
+
         </ToolBarPanel>
 
         <Label Grid.Row="1" Grid.Column="0" Content="Local" FontSize="22" Margin="10 0 0 0"/>

@@ -19,26 +19,30 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Label Content="Host" HorizontalAlignment="Left" Width="61" Height="20" Margin="9,30,0,0" VerticalAlignment="Top" Padding="2"/>
-        <TextBox x:Name="textbox_addhost" Width="60" Height="10" Text="" Margin="9,50,223,194"/>
-        
-        <Label Content="User" HorizontalAlignment="Left" Width="61" Height="20" Margin="10,81,0,0" VerticalAlignment="Top" Padding="2"/>
-        <TextBox x:Name="textbox_adduser" Width="60" Height="10" Text="" Margin="11,101,221,143"/>
+        <Label Content="Host" HorizontalAlignment="Left" Width="61" Height="20" Margin="11,56,0,0" VerticalAlignment="Top" Padding="2"/>
+        <TextBox x:Name="textbox_addhost" Width="80" Height="10" Text="" Margin="11,76,201,168" RenderTransformOrigin="1.05,0.654"/>
 
-        <Label Content="Password" HorizontalAlignment="Left" Width="61" Height="20" Margin="10,137,0,0" VerticalAlignment="Top" Padding="2"/>
-        <TextBox x:Name="textbox_addpass" Width="60" Height="10" Text="" Margin="10,157,222,87"/>
+        <Label Content="User" HorizontalAlignment="Left" Width="61" Height="20" Margin="11,102,0,0" VerticalAlignment="Top" Padding="2"/>
+        <TextBox x:Name="textbox_adduser" Width="80" Height="10" Text="" Margin="11,122,201,122"/>
 
-        <Label Content="Port" HorizontalAlignment="Left" Width="61" Height="20" Margin="10,188,0,0" VerticalAlignment="Top" Padding="2"/>
-        <TextBox x:Name="textbox_addport" Width="40" Height="10" Text="" Margin="10,208,242,36"/>
-        <Button x:Name="button_addprofile" Click="Button_Click" Width="50" Height="20" Margin="61,209,181,36" Content="Add!"/>
+        <Label Content="Password" HorizontalAlignment="Left" Width="61" Height="20" Margin="11,148,0,0" VerticalAlignment="Top" Padding="2"/>
+        <TextBox x:Name="textbox_addpass" Width="80" Height="10" Text="" Margin="11,168,201,76"/>
 
-        <ListBox x:Name="listbox_credentialprofiles" HorizontalAlignment="Left" Height="100" Margin="162,92,0,0" VerticalAlignment="Top" Width="120" BorderThickness="1">
+        <Label Content="Port" HorizontalAlignment="Left" Width="61" Height="20" Margin="11,194,0,0" VerticalAlignment="Top" Padding="2"/>
+        <TextBox x:Name="textbox_addport" Width="40" Height="10" Text="" Margin="11,214,241,30"/>
+        <Button x:Name="button_addprofile" Click="Button_Click" Width="50" Height="20" Margin="56,214,186,31" Content="Add!"/>
+
+        <ListBox x:Name="listbox_credentialprofiles" HorizontalAlignment="Left" Height="120" Margin="102,38,0,0" VerticalAlignment="Top" Width="165" BorderThickness="1">
 
         </ListBox>
-        <Label Content="Credential Profiles" HorizontalAlignment="Left" Margin="162,66,0,0" VerticalAlignment="Top"/>
-        <Button Content="Select!" HorizontalAlignment="Left" Margin="162,197,0,0" VerticalAlignment="Top" Width="55"/>
-        <Button Content="Delete!" HorizontalAlignment="Left" Margin="227,197,0,0" VerticalAlignment="Top" Width="55" Click="Button_Click_1"/>
-        
+        <Label Content="Credential Profiles" HorizontalAlignment="Left" Margin="135,12,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="button_load" Content="Load!" HorizontalAlignment="Left" Margin="187,169,0,0" VerticalAlignment="Top" Width="80" Click="button_load_Click"/>
+        <Button Content="Delete!" HorizontalAlignment="Left" Margin="102,169,0,0" VerticalAlignment="Top" Width="80" Click="Button_Click_1"/>
+        <Label Content="Profile Name" HorizontalAlignment="Left" Width="80" Height="20" Margin="10,10,0,0" VerticalAlignment="Top" Padding="2"/>
+        <TextBox x:Name="textbox_addprofile" Width="80" Height="10" Text="" Margin="11,30,201,214"/>
+        <StackPanel HorizontalAlignment="Left" Height="100" Margin="177,172,0,-2" VerticalAlignment="Top" Width="100"/>
+        <Button x:Name="button_savecredstofile" Content="Save to File!" HorizontalAlignment="Left" Margin="152,214,0,0" VerticalAlignment="Top" Width="89" Click="button_savecredstofile_Click"/>
+
 
 
     </Grid>
