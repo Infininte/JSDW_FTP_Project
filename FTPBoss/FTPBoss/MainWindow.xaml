@@ -33,6 +33,7 @@
             <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -79,6 +80,8 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <ProgressBar Name="progressBar" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" Width="306" Height="30"/>
+
         <!--
         <ListView BorderThickness="0" Margin="10 0 0 0" Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Source={StaticResource remoteDir}}" IsSynchronizedWithCurrentItem="True">
                     <ListView.ItemTemplate>

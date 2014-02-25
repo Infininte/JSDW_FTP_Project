@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 //using System.Windows.Shapes;
+using System.ComponentModel;
 using System.IO;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
@@ -26,6 +27,7 @@ namespace FTPBoss
     /// </summary>
     public partial class MainWindow
     {
+        public static BackgroundWorker bgw = new BackgroundWorker();
         public MainWindow()
         { 
             InitializeComponent();
@@ -59,6 +61,12 @@ namespace FTPBoss
             //RemoteDirectoryItem directory = getRemoteDirectory("/", "new");
 
             //ServerDirectoryBrowser.ItemsSource = directory.RemoteDirectoryItems;
+
+            //Background worker properties
+            bgw.WorkerReportsProgress = true;
+            bgw.WorkerSupportsCancellation = true;
+            bgw.ProgressChanged += new ProgressChangedEventHandler(bgw_ProgressChanged);
+            bgw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgw_RunWorkerCompleted);
 
             Debug.WriteLine("Item Source: " + ServerDirectoryBrowser.ItemsSource.ToString());
 
@@ -283,7 +291,12 @@ namespace FTPBoss
 
         private void uploadFileLocal_Click(object sender, RoutedEventArgs e)
         {
-
+            if (bgw.IsBusy != true)
+            {
+                bgw.DoWork += new DoWorkEventHandler(bgw_DoWorkRemote);
+                bgw.RunWorkerAsync();
+                bgw.DoWork -= new DoWorkEventHandler(bgw_DoWorkRemote);
+            }
         }
 
         //
@@ -319,6 +332,22 @@ namespace FTPBoss
         private void downloadFileRemote_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void bgw_DoWorkRemote(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            Program2.Upload("C:\\Users\\Walter\\Documents\\", "test.txt", "", "LateNightTest1.txt");
+        }
+
+        private void bgw_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar.Value = e.ProgressPercentage;
+        }
+
+        private void bgw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Debug.WriteLine("Finished Uploading!");
         }
     }
 
