@@ -30,6 +30,10 @@ namespace FTPBoss
         { 
             InitializeComponent();
 
+
+            //System.Windows.MessageBox.Show("1 - " + Utility.FormatPath("/", ""));
+            //System.Windows.MessageBox.Show("2 - " + Utility.FormatPath("/new", ""));
+
             /*
             Contents dirContents = new Contents("", "");
 
@@ -87,7 +91,6 @@ namespace FTPBoss
         //
         private RemoteDirectoryItem getRemoteDirectory(string path, string name)
         {
-
             Contents dirConents = new Contents(path, name);
 
             List<Item> dirItems = dirConents.GetItems();
@@ -234,9 +237,24 @@ namespace FTPBoss
 
                 if(directoryItem.IsDirectory)
                 {
-                    //Contents dirContents = new Contents("", directoryItem.Name);
-                    RemoteDirectoryItem directory = getRemoteDirectory(directoryItem.Path, directoryItem.Name);
+                    System.Windows.MessageBox.Show("Name: " + directoryItem.Name + "; Path: " + directoryItem.Path + "; Parent: " + directoryItem.ParentPath);
 
+                    //Contents dirContents = new Contents("", directoryItem.Name);
+
+                    RemoteDirectoryItem directory = null;
+
+                    // This is what's messed up
+
+                    if (directoryItem.Name == "..")
+                    {
+                        directory = getRemoteDirectory(directoryItem.ParentPath, "");
+                    }
+                    else
+                    {
+                        directory = getRemoteDirectory(directoryItem.Path, directoryItem.Name);
+                    }
+
+                    
                     ServerDirectoryBrowser.ItemsSource = directory.RemoteDirectoryItems;
                     
                 }
