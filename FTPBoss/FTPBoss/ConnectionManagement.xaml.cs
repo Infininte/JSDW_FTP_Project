@@ -20,9 +20,9 @@ namespace FTPBoss
     /// </summary>
     public partial class ConnectionManagement
     {
-        public ConnectionManagement()
+        private void PopulateProfiles()
         {
-            InitializeComponent();
+            listbox_credentialprofiles.Items.Clear();
 
             string[] profiles = Program2.credProfiles.GetProfiles();
 
@@ -34,9 +34,30 @@ namespace FTPBoss
             }
         }
 
+        public ConnectionManagement()
+        {
+            InitializeComponent();
+
+            PopulateProfiles();
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (listbox_credentialprofiles.SelectedIndex >= 0)
+            {
+                int index = listbox_credentialprofiles.SelectedIndex;
+                string profile = listbox_credentialprofiles.Items[index].ToString();
+
+                Program2.credProfiles.Delete(profile);
+                PopulateProfiles();
+            }
+
+           
         }
     }
 }
