@@ -262,7 +262,35 @@ namespace FTPBoss
             }
         }
 
-        private async void createDirectory_Click(object sender, RoutedEventArgs e)
+        //
+        // Local event handlers
+        //
+
+        private void createDirectoryLocal_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void deleteDirectoryLocal_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void deleteFileLocal_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void uploadFileLocal_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        //
+        // Remote event handlers
+        //
+
+        private async void createDirectoryRemote_Click(object sender, RoutedEventArgs e)
         {
             var result = await this.ShowInputAsync("Create Directory", "Enter Directory Name");
 
@@ -273,10 +301,25 @@ namespace FTPBoss
 
             Debug.WriteLine("New Dir Path: " + dirItems.Last().Path + "New Dir Name: " + result);
 
-            Program2.CreateDirectory(dirItems.Last().Path, "/" +  result);
+            Program2.CreateDirectory(dirItems.Last().Path, "/" + result);
 
             //await this.ShowMessageAsync("Hello", "Hello" + dirItems.Last().Path + "!");
-        } 
+        }
+
+        private void deleteDirectoryRemote_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void deleteFileRemote_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void downloadFileRemote_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
 

@@ -47,7 +47,15 @@
         </ToolBarPanel>
 
         <Label Grid.Row="1" Grid.Column="0" Content="Local" FontSize="22" Margin="10 0 0 0"/>
-                <TreeView Margin="10 0 0 0" Grid.Row="2" Grid.Column="0" Name="localDirectoryBrowser" TreeViewItem.Expanded="TreeViewItemExpanded"> 
+                <TreeView Margin="10 0 0 0" Grid.Row="2" Grid.Column="0" Name="localDirectoryBrowser" TreeViewItem.Expanded="TreeViewItemExpanded">
+                    <TreeView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Create Directory" Click="createDirectoryLocal_Click"/>
+                            <MenuItem Header="Delete Directory" Click="deleteDirectoryLocal_Click"/>
+                            <MenuItem Header="Delete File" Click="deleteFileLocal_Click"/>
+                            <MenuItem Header="Upload File" Click="uploadFileLocal_Click"/>
+                        </ContextMenu>
+                    </TreeView.ContextMenu>
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate DataType="{x:Type self:DirectoryItem}" ItemsSource="{Binding DirectoryItems}">
                             <TextBlock Text="{Binding Name}" />
@@ -59,7 +67,10 @@
         <ListBox Margin="10 0 0 0" Grid.Row="2" Grid.Column="1" Name="ServerDirectoryBrowser" MouseDoubleClick="remoteDirBrowser_MouseDoubleClick">
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Create Directory" Click="createDirectory_Click"/>
+                    <MenuItem Header="Create Directory" Click="createDirectoryRemote_Click"/>
+                    <MenuItem Header="Delete Directory" Click="deleteDirectoryRemote_Click"/>
+                    <MenuItem Header="Delete File" Click="deleteFileRemote_Click"/>
+                    <MenuItem Header="Download File" Click="downloadFileRemote_Click"/>
                 </ContextMenu>
             </ListBox.ContextMenu>
             <ListBox.ItemTemplate>
