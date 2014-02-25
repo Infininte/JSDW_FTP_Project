@@ -472,7 +472,7 @@ namespace FTPBoss
         private async void bgw_DownloadCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //Debug.WriteLine("Finished loading");
-            //var controller = await this.ShowMessageAsync("Done!", "Download finished!");
+            var controller = await this.ShowMessageAsync("Done!", "Download finished!");
             progressBar.Value = 0;
         }
 
