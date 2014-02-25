@@ -27,8 +27,8 @@ namespace FTPBoss
     /// </summary>
     public partial class MainWindow
     {
-        public static BackgroundWorker bgw = new BackgroundWorker();
-       
+        public static BackgroundWorker bgwU = new BackgroundWorker();
+        public static BackgroundWorker bgwD = new BackgroundWorker();
 
         public MainWindow()
         { 
@@ -74,10 +74,17 @@ namespace FTPBoss
             //ServerDirectoryBrowser.ItemsSource = directory.RemoteDirectoryItems;
 
             //Background worker properties
-            bgw.WorkerReportsProgress = true;
-            bgw.WorkerSupportsCancellation = true;
-            bgw.ProgressChanged += new ProgressChangedEventHandler(bgw_ProgressChanged);
-            bgw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgw_RunWorkerCompleted);
+            bgwU.WorkerReportsProgress = true;
+            bgwU.WorkerSupportsCancellation = true;
+            bgwU.ProgressChanged += new ProgressChangedEventHandler(bgw_ProgressChanged);
+            bgwU.DoWork += new DoWorkEventHandler(bgw_Upload);
+            bgwU.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgw_RunWorkerCompleted);
+
+            bgwD.WorkerReportsProgress = true;
+            bgwD.WorkerSupportsCancellation = true;
+            bgwD.ProgressChanged += new ProgressChangedEventHandler(bgw_ProgressChanged);
+            bgwD.DoWork += new DoWorkEventHandler(bgw_Download);
+            bgwD.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgw_RunWorkerCompleted);
 
             
         }
@@ -156,10 +163,16 @@ namespace FTPBoss
                    }
                }
 
-                RemoteDirectoryItem ftpItem = new RemoteDirectoryItem() { Name = item.FileName, IsDirectory = item.Directory, Path = itemPath, ParentPath = path };
+               int fileSize = 0;
+               if (!item.Directory)
+               {
+                   fileSize = item.FileSize;
+               }
+
+                RemoteDirectoryItem ftpItem = new RemoteDirectoryItem() { Name = item.FileName, IsDirectory = item.Directory, Path = itemPath, FileSize = fileSize };
                 directory.RemoteDirectoryItems.Add(ftpItem);
 
-                Debug.WriteLine("Remote Dir Item Name:  " + ftpItem.Name + ", " + ftpItem.Path + ", " + ftpItem.ParentPath);
+                Debug.WriteLine("Remote Dir Item Name:  " + ftpItem.Name + ", " + ftpItem.Path + ", " + ftpItem.FileSize);
             }
 
             try 
@@ -291,28 +304,51 @@ namespace FTPBoss
         // Local event handlers
         //
 
-        private void createDirectoryLocal_Click(object sender, RoutedEventArgs e)
+        private void delete_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void deleteDirectoryLocal_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void deleteFileLocal_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void uploadFileLocal_Click(object sender, RoutedEventArgs e)
-        {
-            if (bgw.IsBusy != true)
+            if (ServerDirectoryBrowser.SelectedItem != null)
             {
-                bgw.DoWork += new DoWorkEventHandler(bgw_DoWorkRemote);
-                bgw.RunWorkerAsync();
-                bgw.DoWork -= new DoWorkEventHandler(bgw_DoWorkRemote);
+                //Debug.WriteLine(ServerDirectoryBrowser.SelectedItem.ToString());
+
+                RemoteDirectoryItem directoryItem = ServerDirectoryBrowser.SelectedItem as RemoteDirectoryItem;
+
+                Debug.WriteLine(directoryItem.Name);
+
+                if (directoryItem.IsDirectory)
+                {
+                    Program2.DeleteDirectory(directoryItem.Path, directoryItem.Name);
+                }
+                else
+                {
+                    Program2.DeleteFile2(directoryItem.Path, directoryItem.Name);
+                }
+            }
+        }
+
+        private void upload_Click(object sender, RoutedEventArgs e)
+        {
+            if (localDirectoryBrowser.SelectedItem != null)
+            {
+                if (bgwU.IsBusy != true)
+                {
+                    bgwU.RunWorkerAsync(localDirectoryBrowser.SelectedItem as DirectoryItem);
+                }
+            }
+        }
+
+        private void download_Click(object sender, RoutedEventArgs e)
+        {
+            if (localDirectoryBrowser.SelectedItem != null && ServerDirectoryBrowser.SelectedItem != null)
+            {
+                DirectoryItem directoryItem = localDirectoryBrowser.SelectedItem as DirectoryItem;
+                if (bgwD.IsBusy != true)
+                {
+                    ObservableCollection<object> directoryStuff = new ObservableCollection<object>();
+                    directoryStuff.Add(localDirectoryBrowser.SelectedItem as DirectoryItem);
+                    directoryStuff.Add(ServerDirectoryBrowser.SelectedItem as RemoteDirectoryItem);
+                    bgwD.RunWorkerAsync(directoryStuff);
+                }
+
             }
         }
 
@@ -336,25 +372,89 @@ namespace FTPBoss
             //await this.ShowMessageAsync("Hello", "Hello" + dirItems.Last().Path + "!");
         }
 
-        private void deleteDirectoryRemote_Click(object sender, RoutedEventArgs e)
+        private string directoryPath(string path)
         {
+            int index = path.LastIndexOf("\\");
 
+            if (index != -1)
+            {
+                if (path == @"C:\")
+                {
+                    return path;
+                }
+                else
+                {
+                    var count = path.Count(x => x == '\\');
+                    Debug.WriteLine(count);
+                    //if(count == 1)
+                    //{
+                    //path = path.Substring(0, index+1);
+                    //}
+                    //else
+                    //{
+                    path = path.Substring(0, index);
+                    //}
+                }
+            }
+
+            return path;
         }
 
-        private void deleteFileRemote_Click(object sender, RoutedEventArgs e)
-        {
 
-        }
-
-        private void downloadFileRemote_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void bgw_DoWorkRemote(object sender, DoWorkEventArgs e)
+        private void bgw_Upload(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
-            Program2.Upload("C:\\Users\\Walter\\Documents\\", "test.txt", "", "LateNightTest1.txt");
+            DirectoryItem directoryItem = e.Argument as DirectoryItem;
+
+            Debug.WriteLine(directoryItem.Path);
+
+            if (directoryItem.Path != null)
+            {
+                string dirPath = directoryPath(directoryItem.Path) + "\\";
+                //Debug.WriteLine(dirPath);
+
+                Program2.Upload(dirPath, directoryItem.Name, "", directoryItem.Name);
+            }
+        }
+
+        private void bgw_Download(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            ObservableCollection<object> directoryStuff = e.Argument as ObservableCollection<object>;
+            DirectoryItem directoryItem = directoryStuff[0] as DirectoryItem;
+            RemoteDirectoryItem remoteDirectoryItem = directoryStuff[1] as RemoteDirectoryItem;
+
+            FileAttributes attr = File.GetAttributes(directoryItem.Path);
+            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+            {
+                //RemoteDirectoryItem remoteDirectoryItem = ServerDirectoryBrowser.SelectedItem as RemoteDirectoryItem;
+
+                Debug.WriteLine("Its a directory! Name: " + directoryItem.Name);
+
+                if (!remoteDirectoryItem.IsDirectory)
+                {
+                    string localPath = directoryPath(directoryItem.Path) + "\\";
+                    //Debug.Write("Local Directory Path: " + localPath);
+                    Debug.WriteLine("Dir Item path: " + directoryItem.Path); ;
+                    Debug.WriteLine("Download item path: " + directoryItem.Path + remoteDirectoryItem.Name);
+                    Debug.WriteLine("localPath: " + localPath);
+                    //Debug.WriteLine("Last index of \\: " + directoryItem.Path.LastIndexOf(@"\"));
+                    //Debug.WriteLine("Path length: " + directoryItem.Path.Length);
+
+
+                    if (directoryItem.Path.LastIndexOf(@"\") == directoryItem.Path.Length - 1)
+                    {
+                        Debug.WriteLine("Just append file name");
+                        Program2.Download(remoteDirectoryItem.Path, remoteDirectoryItem.Name, directoryItem.Path, remoteDirectoryItem.Name, remoteDirectoryItem.FileSize.ToString());
+                    }
+                    else
+                        Program2.Download(remoteDirectoryItem.Path, remoteDirectoryItem.Name, directoryItem.Path + "\\", remoteDirectoryItem.Name, remoteDirectoryItem.FileSize.ToString());
+
+                    //Program2.Download(remoteDirectoryItem.Path, remoteDirectoryItem.Name, directoryItem.Path, remoteDirectoryItem.Name);
+
+                }
+
+            }
         }
 
         private void bgw_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -364,7 +464,8 @@ namespace FTPBoss
 
         private void bgw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            Debug.WriteLine("Finished Uploading!");
+            Debug.WriteLine("Finished loading");
+            progressBar.Value = 0;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -456,6 +557,8 @@ namespace FTPBoss
         public string Path { get; set; }
 
         public string ParentPath { get; set; }
+
+        public int FileSize { get; set; }
 
         //A list of the files and directories in this directory
         public ObservableCollection<RemoteDirectoryItem> RemoteDirectoryItems { get; set; }

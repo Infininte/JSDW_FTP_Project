@@ -362,7 +362,7 @@ namespace FTPBoss
         }
         */
 
-        public static bool WriteFile(string path, string fileName, Stream stream)
+        public static bool WriteFile(string path, string fileName, Stream stream, int filesize = -1)
         {
             FileStream localFileStream = new FileStream(path + fileName, FileMode.Create);
             byte[] byteBuffer = new byte[bufferSize];
@@ -374,6 +374,17 @@ namespace FTPBoss
                 {
                     localFileStream.Write(byteBuffer, 0, bytesRead);
                     bytesRead = stream.Read(byteBuffer, 0, bufferSize);
+                    int loadProgress = 0;
+                    if (filesize > 0)
+                    {
+                        loadProgress = (int)(localFileStream.Length * 100 / filesize);
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine("Could not get filesize");
+                        loadProgress = (int)(localFileStream.Length * 100 / 100000000);
+                    }
+                    MainWindow.bgwD.ReportProgress(loadProgress);
                 }
             }
             catch (Exception ex)
@@ -1284,7 +1295,7 @@ namespace FTPBoss
             }
         }
 
-        static bool Download(string fromPath, string fromFile, string toPath, string toFile)
+        public static bool Download(string fromPath, string fromFile, string toPath, string toFile, string filesize = "")
         {
             // Check if from file exists
             if (!FileExists(fromPath, fromFile))
@@ -1311,7 +1322,7 @@ namespace FTPBoss
                 Console.WriteLine("Download Complete, status {0}", response.StatusDescription);
 
                 // Write to file
-                if (Local.WriteFile(toPath, toFile, responseStream))
+                if (Local.WriteFile(toPath, toFile, responseStream, Convert.ToInt32(filesize)))
                 {
                     Console.WriteLine("Successfully written to file: " + toPath + toFile);
                     returnValue = true;
@@ -1379,6 +1390,8 @@ namespace FTPBoss
                     stream.Write(buffer, 0, contentLength);
                     contentLength = filestream.Read(buffer, 0, bufferLength);
 
+                    int uploadProgress = (int)(loadSize * 100 / filestream.Length);
+                    MainWindow.bgwU.ReportProgress(uploadProgress);
                 }
 
                 stream.Close();

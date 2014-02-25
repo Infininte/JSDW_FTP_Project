@@ -50,12 +50,9 @@
                 <TreeView Margin="10 0 0 0" Grid.Row="2" Grid.Column="0" Name="localDirectoryBrowser" TreeViewItem.Expanded="TreeViewItemExpanded">
                     <TreeView.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Create Directory" Click="createDirectoryLocal_Click"/>
-                            <MenuItem Header="Delete Directory" Click="deleteDirectoryLocal_Click"/>
-                            <MenuItem Header="Delete File" Click="deleteFileLocal_Click"/>
-                            <MenuItem Header="Upload File" Click="uploadFileLocal_Click"/>
+                            <MenuItem Header="Upload" Click="upload_Click"/>
                         </ContextMenu>
-                    </TreeView.ContextMenu>
+            </TreeView.ContextMenu>
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate DataType="{x:Type self:DirectoryItem}" ItemsSource="{Binding DirectoryItems}">
                             <TextBlock Text="{Binding Name}" />
@@ -68,9 +65,8 @@
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Create Directory" Click="createDirectoryRemote_Click"/>
-                    <MenuItem Header="Delete Directory" Click="deleteDirectoryRemote_Click"/>
-                    <MenuItem Header="Delete File" Click="deleteFileRemote_Click"/>
-                    <MenuItem Header="Download File" Click="downloadFileRemote_Click"/>
+                    <MenuItem Header="Delete" Click="delete_Click"/>
+                    <MenuItem Header="Download" Click="download_Click"/>
                 </ContextMenu>
             </ListBox.ContextMenu>
             <ListBox.ItemTemplate>
