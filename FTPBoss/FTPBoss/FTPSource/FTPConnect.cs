@@ -10,6 +10,12 @@ using System.Net.Sockets;               // For file permissions
 
 namespace FTPBoss
 {
+    /*
+ * TODO
+ * - MoveFile() - Moves file from one directory to another
+ * */
+
+    #region Utilitiez
     class RequestMethods
     {
         public const int FileSize   = 1,
@@ -97,7 +103,9 @@ namespace FTPBoss
             return path.Replace("//", "/");
         }
     }
+    #endregion
 
+    #region Local localities
     class Local
     {
         public const int bufferSize = 2048;
@@ -379,7 +387,9 @@ namespace FTPBoss
         }
 
     }
+    #endregion
 
+    #region FTP class just for changing file permissions!
     class FtpSocket
     {
         const int TIMEOUT = 10000;
@@ -499,12 +509,9 @@ namespace FTPBoss
             return false;
         }
     }
+    #endregion
 
-    /*
-     * TODO
-     * - MoveFile() - Moves file from one directory to another
-     * */
-
+    #region Directory Contents stuff
     class Contents
     {
         private List<Item> Items = new List<Item>();
@@ -550,7 +557,7 @@ namespace FTPBoss
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show("Error: " + ex.Message);
+                System.Windows.MessageBox.Show("Error 2: " + ex.Message);
                 Console.WriteLine("ERROR: " + ex.Message);
             }
         }
@@ -722,7 +729,6 @@ namespace FTPBoss
             return true;
         }
     }
-
     class Item
     {
         public string FileName,
@@ -757,27 +763,177 @@ namespace FTPBoss
                 return FileName + " " + FileSize + " " + LastModified.ToString() + " " + Permissions + " " + Convert.ToString(Directory);
         }
     }
+    #endregion
+
+    #region Connection Management Sweetness
+    class Credentials
+    {
+        public string Host, User, Pass, Port;
+        public Credentials(string host, string user, string pass, string port) { Host = host; User = user; Pass = pass; Port = port; }
+        public override string ToString() { return "host=" + Host + ";user=" + User + ";pass=" + Pass + ";port=" + Port + ";"; }
+    }
+    class CredentialProfiles
+    {
+        private const int host = 1, user = 2, pass = 3, port = 4;
+        private string selectedProfile;
+        private Dictionary<string, Credentials> creds;
+        public CredentialProfiles()
+        {
+            selectedProfile = "";
+            creds = new Dictionary<string, Credentials>();
+        }
+        public string[] GetProfiles() { return creds.Keys.ToArray(); }
+        public bool SelectProfile(string profileName)
+        {
+            if (!creds.ContainsKey(profileName))
+            {
+                Console.WriteLine("Profile '" + profileName + "' does not exist!");
+                return false;
+            }
+
+            selectedProfile = profileName;
+            return true;
+        }
+        public string GetHost() { return getStuff(host); }
+        public string GetUser() { return getStuff(user); }
+        public string GetPass() { return getStuff(pass); }
+        public string GetPort() { return getStuff(port); }
+        private string getStuff(int type)
+        {
+            if (selectedProfile.Length == 0)
+            {
+                Console.WriteLine("No profile selected!");
+                return null;
+            }
+
+            switch (type)
+            {
+                case host:
+                    return creds[selectedProfile].Host;
+                case user:
+                    return creds[selectedProfile].User;
+                case pass:
+                    return creds[selectedProfile].Pass;
+                case port:
+                    return creds[selectedProfile].Port;
+                default:
+                    return null;
+            }
+        }
+        public bool Contains(string profileName) { return creds.ContainsKey(profileName); }
+        public Credentials GetCredentials(string profileName)
+        {
+            Credentials credOut = null;
+            creds.TryGetValue(profileName, out credOut);
+            return credOut;
+        }
+        public void Add(string profileName, string host, string user, string pass, string port)
+        {
+            if (creds.ContainsKey(profileName))
+            {
+                Console.WriteLine("profile name already exists!");
+                return;
+            }
+
+            creds.Add(profileName, new Credentials(host, user, pass, port));
+        }
+        public void Delete(string profileName)
+        {
+            if (!creds.ContainsKey(profileName))
+            {
+                Console.WriteLine("That profile does not existed and therefore it cannot be deleteded!");
+                return;
+            }
+            creds.Remove(profileName);
+        }
+        public void Clear() { creds.Clear(); }
+        public bool SaveToFile(string file)
+        {
+            List<string> lines = new List<string>();
+            foreach (KeyValuePair<string, Credentials> cred in this.creds)
+            {
+                lines.Add("profile=" + cred.Key + ";" + cred.Value);
+                Console.WriteLine("profile=" + cred.Key + ";" + cred.Value);
+            }
+            System.IO.File.WriteAllLines(file, lines.ToArray());
+            return true;
+        }
+        public bool LoadFromFile(string file)
+        {
+            if (!File.Exists(file))
+            {
+                Console.WriteLine("File '" + file + "' does not exist!");
+                return false;
+            }
+
+            string[] creds = System.IO.File.ReadAllLines(file);
+
+            for (int i = 0; i < creds.Count(); ++i)
+            {
+                string[] line = creds[i].Split(';');
+
+                if (line.Count() != 6)
+                {
+                    Console.WriteLine("Invalid file contents! f");
+                    return false;
+                }
+
+                string profile = "", host = "", user = "", pass = "", port = "";
+
+                for (int j = 0; j < line.Count(); ++j)
+                {
+                    string[] pair = line[j].Split('=');
+
+                    if (pair.Count() != 2)
+                        continue;
+
+                    switch (pair[0])
+                    {
+                        case "profile":
+                            profile = pair[1];
+                            break;
+                        case "host":
+                            host = pair[1];
+                            break;
+                        case "user":
+                            user = pair[1];
+                            break;
+                        case "pass":
+                            pass = pair[1];
+                            break;
+                        case "port":
+                            port = pair[1];
+                            break;
+                    }
+                }
+
+                Add(profile, host, user, pass, port);
+            }
+
+            return true;
+        }
+    }
+    #endregion
 
     class Program2
     {
-        ///*
-        static string Host = "ftp.drwestfall.net",
-                      User = "ftp04",
-                      Pass = "project";
-        /*/
-        static string Host = "pftp.bugs3.com",
-                      User = "u631161179.ftp",
-                      Pass = "testftp1";
-        //*/
-
-        static string currentFtpDir    = "",
-                      currentLocalDir  = "",
-                      previousFtpDir   = "",
-                      previousLocalDir = "";
+        static public CredentialProfiles credProfiles = null;
+        static public string CredentialFile = AppDomain.CurrentDomain.BaseDirectory + "/credentials.dat";
+        static public string Host = "", User = "", Pass = "", Port = "";
 
         static Contents DirectoryContents;
 
-/*
+        /*
+         *  THESE CREDENTIALS ARE OBSOLETE
+        static string Host = "ftp.drwestfall.net",
+                      User = "ftp04",
+                      Pass = "project";         
+        static string Host = "pftp.bugs3.com",
+                      User = "u631161179.ftp",
+                      Pass = "testftp1";
+        */
+
+        /*
         static void Main(string[] args)
         {
             DirectoryContents = new Contents();
@@ -1026,7 +1182,7 @@ namespace FTPBoss
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message.ToString());
+                Console.WriteLine("Error in CreateDirectory(): " + ex.Message.ToString());
                 return false;
             }
         }
