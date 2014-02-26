@@ -331,10 +331,9 @@ namespace FTPBoss
                     //navbar_text.Text = navigation.ToString();
 
                     // uncomment this when ready
-                    //directory = getRemoteDirectory(navigation.ToString(), "");
+                    directory = getRemoteDirectory(navigation.ToString(), "");
                     
                     ServerDirectoryBrowser.ItemsSource = directory.RemoteDirectoryItems;
-                    
                 }
             }
         }
@@ -352,6 +351,9 @@ namespace FTPBoss
                 RemoteDirectoryItem directoryItem = ServerDirectoryBrowser.SelectedItem as RemoteDirectoryItem;
 
                 Debug.WriteLine(directoryItem.Name);
+
+                if (directoryItem.Name == ".." || directoryItem.Name == ".")
+                    return;
 
                 if (directoryItem.IsDirectory)
                 {
