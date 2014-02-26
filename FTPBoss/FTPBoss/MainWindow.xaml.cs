@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -116,6 +117,7 @@ namespace FTPBoss
             */
 
             RemoteDirectoryItem rootDir = getRemoteDirectory("", "");
+           
 
             ServerDirectoryBrowser.ItemsSource = rootDir.RemoteDirectoryItems;
         }
@@ -173,10 +175,11 @@ namespace FTPBoss
                    fileSize = item.FileSize;
                }
 
-                RemoteDirectoryItem ftpItem = new RemoteDirectoryItem() { Name = item.FileName, IsDirectory = item.Directory, Path = itemPath, FileSize = fileSize };
+                RemoteDirectoryItem ftpItem = new RemoteDirectoryItem() { Name = item.FileName, IsDirectory = item.Directory, Path = itemPath, FileSize = fileSize,
+                                                                            Modified = item.LastModified, Permissions = item.Permissions, IsFile = !item.Directory};
                 directory.RemoteDirectoryItems.Add(ftpItem);
 
-                Debug.WriteLine("Remote Dir Item Name:  " + ftpItem.Name + ", " + ftpItem.Path + ", " + ftpItem.FileSize);
+                Debug.WriteLine("Remote Dir Item Name:  " + ftpItem.Name + ", " + ftpItem.Path + ", " + ftpItem.FileSize + ", " + ftpItem.Modified + ", " + ftpItem.Permissions);
             }
 
             try 
@@ -218,7 +221,7 @@ namespace FTPBoss
             var files = Directory.EnumerateFiles(path);
 
             foreach (string file in files)
-                parent.DirectoryItems.Add(new DirectoryItem() { Name = Path.GetFileName(file), Path = file });
+                parent.DirectoryItems.Add(new DirectoryItem() { Name = Path.GetFileName(file), Path = file, IsDirectory = false, IsFile = true });
         }
 
         //Gets local directories in a specified path and adds them to the sepcified parent directory
@@ -228,7 +231,7 @@ namespace FTPBoss
 
             foreach (string directory in directories)
             {
-                DirectoryItem newDirectory = new DirectoryItem() { Name= Path.GetFileName(directory), Path = directory};
+                DirectoryItem newDirectory = new DirectoryItem() { Name= Path.GetFileName(directory), Path = directory, IsDirectory = true, IsFile = false};
 
                 try
                 {
@@ -318,17 +321,22 @@ namespace FTPBoss
 
                 RemoteDirectoryItem directoryItem = ServerDirectoryBrowser.SelectedItem as RemoteDirectoryItem;
 
-                Debug.WriteLine(directoryItem.Name);
+                if(directoryItem.Name != "..")
+                { 
+                    Debug.WriteLine(directoryItem.Name);
 
-                if (directoryItem.IsDirectory)
-                {
-                    Program2.DeleteDirectory(directoryItem.Path, directoryItem.Name);
-                }
-                else
-                {
-                    Program2.DeleteFile2(directoryItem.Path, directoryItem.Name);
+                    if (directoryItem.IsDirectory)
+                    {
+                        Program2.DeleteDirectory(directoryItem.Path, directoryItem.Name);
+                    }
+                    else
+                    {
+                        Program2.DeleteFile(directoryItem.Path, directoryItem.Name);
+                    }
                 }
             }
+
+            refreshRemoteDirectory();
         }
 
         private void upload_Click(object sender, RoutedEventArgs e)
@@ -376,6 +384,8 @@ namespace FTPBoss
             Program2.CreateDirectory(dirItems.Last().Path, "/" + result);
 
             //await this.ShowMessageAsync("Hello", "Hello" + dirItems.Last().Path + "!");
+
+            refreshRemoteDirectory();
         }
 
         private string directoryPath(string path)
@@ -446,14 +456,24 @@ namespace FTPBoss
             BackgroundWorker worker = sender as BackgroundWorker;
             DirectoryItem directoryItem = e.Argument as DirectoryItem;
 
-            Debug.WriteLine(directoryItem.Path);
+            //Debug.WriteLine("Upload Directory Path: " + directoryItem.Path);
 
             if (directoryItem.Path != null)
             {
                 string dirPath = directoryPath(directoryItem.Path) + "\\";
                 //Debug.WriteLine(dirPath);
 
-                Program2.Upload(dirPath, directoryItem.Name, "", directoryItem.Name);
+                string uploadPath = getCurrentFTPDirectory();
+                
+                if(uploadPath != null)
+                { 
+                    if(uploadPath != "/")
+                        uploadPath += "/";
+
+                    Debug.WriteLine("Upload directory: " + uploadPath);
+
+                    Program2.Upload(dirPath, directoryItem.Name, uploadPath, directoryItem.Name);
+                }
             }
         }
 
@@ -480,21 +500,31 @@ namespace FTPBoss
                     Debug.WriteLine("localPath: " + localPath);
                     //Debug.WriteLine("Last index of \\: " + directoryItem.Path.LastIndexOf(@"\"));
                     //Debug.WriteLine("Path length: " + directoryItem.Path.Length);
+                    //Debug.WriteLine("Path of File on Server: " + remoteDirectoryItem.Path + remoteDirectoryItem.Name);
 
 
                     if (directoryItem.Path.LastIndexOf(@"\") == directoryItem.Path.Length - 1)
                     {
                         Debug.WriteLine("Just append file name");
-                        Program2.Download(remoteDirectoryItem.Path, remoteDirectoryItem.Name, directoryItem.Path, remoteDirectoryItem.Name, remoteDirectoryItem.FileSize.ToString());
+                        if (remoteDirectoryItem.Path == "" || remoteDirectoryItem.Path == "/")
+                            Program2.Download(remoteDirectoryItem.Path, remoteDirectoryItem.Name, directoryItem.Path, remoteDirectoryItem.Name, remoteDirectoryItem.FileSize.ToString());
+                        else
+                            Program2.Download(remoteDirectoryItem.Path + "/", remoteDirectoryItem.Name, directoryItem.Path, remoteDirectoryItem.Name, remoteDirectoryItem.FileSize.ToString());
+ 
                     }
                     else
-                        Program2.Download(remoteDirectoryItem.Path, remoteDirectoryItem.Name, directoryItem.Path + "\\", remoteDirectoryItem.Name, remoteDirectoryItem.FileSize.ToString());
-
+                    { 
+                        if(remoteDirectoryItem.Path == "" || remoteDirectoryItem.Path == "/")
+                            Program2.Download(remoteDirectoryItem.Path, remoteDirectoryItem.Name, directoryItem.Path + "\\", remoteDirectoryItem.Name, remoteDirectoryItem.FileSize.ToString());
+                        else
+                            Program2.Download(remoteDirectoryItem.Path + "/", remoteDirectoryItem.Name, directoryItem.Path + "\\", remoteDirectoryItem.Name, remoteDirectoryItem.FileSize.ToString());
+                    }
                     //Program2.Download(remoteDirectoryItem.Path, remoteDirectoryItem.Name, directoryItem.Path, remoteDirectoryItem.Name);
-
                 }
-
+                //worker.ReportProgress(100, directoryStuff);
+                //worker.
             }
+            e.Result = directoryStuff;
         }
 
         private void bgw_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -506,6 +536,24 @@ namespace FTPBoss
         {
             Debug.WriteLine("Finished loading");
             progressBar.Value = 0;
+            refreshRemoteDirectory();
+
+            
+            //Debug.WriteLine(e.ToString());
+ 
+            ObservableCollection<object> directoryStuff = e.Result as ObservableCollection<object>;
+
+            if(directoryStuff != null)
+            {
+                DirectoryItem directoryItem = directoryStuff[0] as DirectoryItem;
+
+                if (directoryItem.Path != null)
+                {
+                    directoryItem.DirectoryItems.Clear();
+                    getDirectories(directoryItem.Path, directoryItem);
+                    getFiles(directoryItem.Path, directoryItem);
+                }
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -514,15 +562,84 @@ namespace FTPBoss
             newWin.Show();
         }
 
-        private void Button_Connect(object sender, RoutedEventArgs e)
+        private async void Button_Connect(object sender, RoutedEventArgs e)
         {
             if(Program2.Host.Length == 0 || Program2.User.Length == 0 || Program2.Pass.Length == 0)
             {
-                System.Windows.MessageBox.Show("You need to log in first!");
+                //System.Windows.MessageBox.Show("You need to log in first!");
+                await this.ShowMessageAsync("Error", "Please load a connection.");
                 return;
             }
 
             getFTPRootDirectory();
+        }
+        
+        private async void permissions_Click(object sender, RoutedEventArgs e)
+        {
+            if (ServerDirectoryBrowser.SelectedItem != null)
+            {
+                RemoteDirectoryItem directoryItem = ServerDirectoryBrowser.SelectedItem as RemoteDirectoryItem;
+
+                if(directoryItem.Name != "..")
+                {
+                    var result = await this.ShowInputAsync("Change Permissions", "Enter New Permissions");
+
+                    if (result == null)
+                        return;
+
+                    int chMod = Convert.ToInt32(result);
+
+                    if (chMod <= 777 && chMod >= 000)
+                    {
+                        Program2.ChangeFilePermission(directoryItem.Path, directoryItem.Name, chMod);
+                    }
+                }
+            }
+
+            refreshRemoteDirectory();
+        }
+
+        public void refreshRemoteDirectory()
+        {
+            //ObservableCollection<RemoteDirectoryItem> dirItems = ServerDirectoryBrowser.ItemsSource as ObservableCollection<RemoteDirectoryItem>;
+
+            string path = getCurrentFTPDirectory();
+
+            if(path != null)
+            {
+                RemoteDirectoryItem directory = getRemoteDirectory(path, "");
+
+                ServerDirectoryBrowser.ItemsSource = directory.RemoteDirectoryItems;
+            }
+        }
+
+        private string getCurrentFTPDirectory()
+        {
+            ObservableCollection<RemoteDirectoryItem> dirItems = ServerDirectoryBrowser.ItemsSource as ObservableCollection<RemoteDirectoryItem>;
+
+            if(dirItems != null)
+                return dirItems.Last().Path;
+
+            return null;
+        }
+
+        private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
+
+            if (treeViewItem != null)
+            {
+                treeViewItem.Focus();
+                //e.Handled = true;
+            }
+        }
+
+        static TreeViewItem VisualUpwardSearch(DependencyObject source)
+        {
+            while (source != null && !(source is TreeViewItem))
+                source = VisualTreeHelper.GetParent(source);
+
+            return source as TreeViewItem;
         }
     }
 
@@ -537,6 +654,10 @@ namespace FTPBoss
         public string Name { get; set; }
 
         public string Path { get; set; }
+
+        public bool IsDirectory { get; set; }
+
+        public bool IsFile { get; set; }
 
         public ObservableCollection<DirectoryItem> DirectoryItems { get; set; }
     }
@@ -593,12 +714,19 @@ namespace FTPBoss
 
         public bool IsDirectory { get; set; }
 
+        public bool IsFile { get; set; }
+
         //This is the path to the directory of this item -- not the actual item. Actual path is: Path + Name.
         public string Path { get; set; }
 
         public int FileSize { get; set; }
 
+        public DateTime Modified { get; set; }
+
+        public int Permissions { get; set; }
+
         //A list of the files and directories in this directory
         public ObservableCollection<RemoteDirectoryItem> RemoteDirectoryItems { get; set; }
     }
+
 }
