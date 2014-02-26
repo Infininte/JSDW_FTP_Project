@@ -93,7 +93,6 @@ namespace FTPBoss
 
         public static string FormatPath(string path, string name)
         {
-            // edited
             path = path.TrimEnd(Path.DirectorySeparatorChar);
 
             if (path.Length > 0)
@@ -1082,21 +1081,14 @@ namespace FTPBoss
 
         public static bool DeleteDirectory(string path, string dirName)
         {
-            System.Windows.MessageBox.Show("DeleteDirectory('"+path+"', '"+dirName+"');");
-
-            /* Check if directory exists
-            if (!DirectoryExists(path, dirName))
-            {
-                Console.WriteLine("Directory '" + dirName + "' does not exist!");
+            if (dirName == "." || dirName == "..")
                 return false;
-            }*/
+
+            System.Windows.MessageBox.Show("DeleteDirectory('"+path+"', '"+dirName+"');");
 
             // Don't delete the root
             if ((path + dirName) == "")
-            {
-                Console.WriteLine("Don't delete the root!!!");
                 return false;
-            }
 
             Contents contents = new Contents(path, dirName);
 
@@ -1105,15 +1097,15 @@ namespace FTPBoss
             {
                 try
                 {
-                    Console.WriteLine("Deleting directory!");
-                    FtpWebRequest request = GetRequest(RequestMethods.DeleteDir, path + dirName);
+                    //System.Windows.MessageBox.Show("Deleting directory empty: " + Utility.FormatPath(path, dirName));
+                    FtpWebRequest request = GetRequest(RequestMethods.DeleteDir, Utility.FormatPath(path, dirName));
                     FtpWebResponse response = (FtpWebResponse)request.GetResponse();
                     response.Close();
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message.ToString());
+                    System.Windows.MessageBox.Show("Delete dir error: " + ex.Message);
                     return false;
                 }
             }
@@ -1127,25 +1119,17 @@ namespace FTPBoss
                     if (items[i].Directory)
                     {
                         // Recursion is fun!
-                        DeleteDirectory(path + dirName, items[i].FileName);
+                        DeleteDirectory(Utility.FormatPath(path, dirName), items[i].FileName);
                     }
                     else // yay, it's a file!
                     {
-                        FTPBoss.Program2.DeleteFile(path + dirName, items[i].FileName);
+                        DeleteFile(Utility.FormatPath(path, dirName), items[i].FileName);
                     }
                 }
 
                 DeleteDirectory(path, dirName);
                 return true;
             }
-
-
-                /*
-                for (int i = 0; i < filenames.Count(); ++i)
-                {
-                    DeleteFile(path + dirName, filenames[i]);
-                }
-                 * */
         }
 
         public static bool DeleteFile(string path, string fileName)
