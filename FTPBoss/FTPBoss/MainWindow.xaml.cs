@@ -107,11 +107,10 @@ namespace FTPBoss
             
         }
 
-        ~MainWindow()
+        private void RefreshRemoteListBox()
         {
-
-            
-            // close ConnectionManagement window
+            RemoteDirectoryItem dir = getRemoteDirectory(navigation.ToString(), "");
+            ServerDirectoryBrowser.ItemsSource = dir.RemoteDirectoryItems;
         }
 
         private void getFTPRootDirectory()
@@ -136,12 +135,7 @@ namespace FTPBoss
             Program2.PrevDirectory = Program2.CurrentDirectory;
             Program2.CurrentDirectory = "";
 
-            //textbox_tester.Text = Program2.CurrentDirectory;
-            //textbox_tester2.Text = Program2.PrevDirectory;
-
-
             navigation.AddRoot();
-            //navbar_text.Text = navigation.ToString();
 
             RemoteDirectoryItem rootDir = getRemoteDirectory("", "");
 
@@ -363,6 +357,8 @@ namespace FTPBoss
                 {
                     Program2.DeleteFile(directoryItem.Path, directoryItem.Name);
                 }
+
+                RefreshRemoteListBox();
             }
         }
 

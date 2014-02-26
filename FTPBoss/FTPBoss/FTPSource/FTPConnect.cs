@@ -1081,14 +1081,10 @@ namespace FTPBoss
 
         public static bool DeleteDirectory(string path, string dirName)
         {
-            if (dirName == "." || dirName == "..")
+            if (dirName == "." || dirName == ".." || (path + dirName) == "")
                 return false;
 
-            System.Windows.MessageBox.Show("DeleteDirectory('"+path+"', '"+dirName+"');");
-
-            // Don't delete the root
-            if ((path + dirName) == "")
-                return false;
+            //System.Windows.MessageBox.Show("DeleteDirectory('"+path+"', '"+dirName+"');");
 
             Contents contents = new Contents(path, dirName);
 
