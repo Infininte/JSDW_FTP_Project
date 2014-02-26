@@ -42,11 +42,17 @@ namespace FTPBoss
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if(button_addprofile.Content == "Add")
+            if(button_addprofile.Content.ToString() == "Add")
             {
                 Program2.credProfiles.Add(textbox_addprofile.Text, textbox_addhost.Text, textbox_adduser.Text, textbox_addpass.Text, textbox_addport.Text);
+
+                textbox_addprofile.Text = "";
+                textbox_addhost.Text = "";
+                textbox_adduser.Text = "";
+                textbox_addpass.Text = "";
+                textbox_addport.Text = "";
             }
-            else if (button_addprofile.Content == "Save")
+            else if (button_addprofile.Content.ToString() == "Save")
             {
                 int index = listbox_credentialprofiles.SelectedIndex;
 
