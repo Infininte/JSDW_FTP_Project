@@ -627,7 +627,8 @@ namespace FTPBoss
         /* NEW ADDITION */
         public List<Item> GetItems()
         {
-            return this.Items;
+            // Sort items so directories are first
+            return Items.OrderBy(o => !o.Directory).ToList();
         }
         /* NEW ADDITION */
         public string[] GetFileNames()
