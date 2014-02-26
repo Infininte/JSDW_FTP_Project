@@ -93,7 +93,6 @@ namespace FTPBoss
 
         public static string FormatPath(string path, string name)
         {
-            // edited
             path = path.TrimEnd(Path.DirectorySeparatorChar);
 
             if (path.Length > 0)
@@ -932,6 +931,9 @@ namespace FTPBoss
         static public string CredentialFile = AppDomain.CurrentDomain.BaseDirectory + "/credentials.dat";
         static public string Host = "", User = "", Pass = "", Port = "";
 
+        static public string CurrentDirectory = "";
+        static public string PrevDirectory = "";
+
         static Contents DirectoryContents;
 
         /*
@@ -1079,36 +1081,27 @@ namespace FTPBoss
 
         public static bool DeleteDirectory(string path, string dirName)
         {
-            /* Check if directory exists
-            if (!DirectoryExists(path, dirName))
-            {
-                Console.WriteLine("Directory '" + dirName + "' does not exist!");
+            if (dirName == "." || dirName == ".." || (path + dirName) == "")
                 return false;
-            }*/
 
-            // Don't delete the root
-            if ((path + dirName) == "")
-            {
-                Console.WriteLine("Don't delete the root!!!");
-                return false;
-            }
+            //System.Windows.MessageBox.Show("DeleteDirectory('"+path+"', '"+dirName+"');");
 
             Contents contents = new Contents(path, dirName);
 
             // If no files or directories, delete directory
-            if (contents.Count() == 0)
+            if (contents.Count() <= 1)
             {
                 try
                 {
-                    Console.WriteLine("Deleting directory!");
-                    FtpWebRequest request = GetRequest(RequestMethods.DeleteDir, path + dirName);
+                    //System.Windows.MessageBox.Show("Deleting directory empty: " + Utility.FormatPath(path, dirName));
+                    FtpWebRequest request = GetRequest(RequestMethods.DeleteDir, Utility.FormatPath(path, dirName));
                     FtpWebResponse response = (FtpWebResponse)request.GetResponse();
                     response.Close();
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message.ToString());
+                    System.Windows.MessageBox.Show("Delete dir error: " + ex.Message);
                     return false;
                 }
             }
@@ -1122,28 +1115,20 @@ namespace FTPBoss
                     if (items[i].Directory)
                     {
                         // Recursion is fun!
-                        DeleteDirectory(path + dirName, items[i].FileName);
+                        DeleteDirectory(Utility.FormatPath(path, dirName), items[i].FileName);
                     }
                     else // yay, it's a file!
                     {
-                        FTPBoss.Program2.DeleteFile2(path + dirName, items[i].FileName);
+                        DeleteFile(Utility.FormatPath(path, dirName), items[i].FileName);
                     }
                 }
 
                 DeleteDirectory(path, dirName);
                 return true;
             }
-
-
-                /*
-                for (int i = 0; i < filenames.Count(); ++i)
-                {
-                    DeleteFile(path + dirName, filenames[i]);
-                }
-                 * */
         }
 
-        public static bool DeleteFile2(string path, string fileName)
+        public static bool DeleteFile(string path, string fileName)
         {
             Console.WriteLine("DeleteFile('" + path + "', '" + fileName + "')");
 
@@ -1347,6 +1332,8 @@ namespace FTPBoss
 
         public static bool Upload(string fromPath, string fromFile, string toPath, string toFile)
         {
+            System.Windows.MessageBox.Show("Upload('"+fromPath+"','"+fromFile+"','"+toPath+"','"+toFile+"')");
+
             // Check if from file exists
             if (!File.Exists(fromPath + fromFile))
             {
@@ -1396,6 +1383,7 @@ namespace FTPBoss
 
                 stream.Close();
                 filestream.Close();
+                System.Windows.MessageBox.Show("Completed upload!", "Dude");
 
                 /*
                 StreamReader sourceStream = new StreamReader(fromPath + fromFile);

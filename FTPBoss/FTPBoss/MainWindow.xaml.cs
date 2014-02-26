@@ -22,6 +22,20 @@ using MahApps.Metro.Controls.Dialogs;
 
 namespace FTPBoss
 {
+    public class Nav
+    {
+        private List<string> nav = null;
+        public Nav() { nav = new List<string>(); }
+        public void AddRoot() { nav.Add(""); }
+        public void Add(string dirName) { nav.Add(dirName); }
+        public void Remove() { nav.RemoveAt(nav.Count() - 1); }
+        public string ToString(string separator = "/")
+        {
+            string output = string.Join(separator, nav);
+            return output;
+        }
+    }
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -29,6 +43,8 @@ namespace FTPBoss
     {
         public static BackgroundWorker bgwU = new BackgroundWorker();
         public static BackgroundWorker bgwD = new BackgroundWorker();
+
+        public static Nav navigation = new Nav();
 
         public MainWindow()
         { 
@@ -39,6 +55,8 @@ namespace FTPBoss
             //Program2.credProfiles.Add("Westfall", "drwestfall.net", "ftp04", "project", "21");
             //Program2.credProfiles.Add("bugs3", "pftp.bugs3.com", "u631161179.ftp", "testftp1", "21");
             //Program2.credProfiles.SaveToFile(Program2.CredentialFile);
+
+            // Nav bar!
 
             //System.Windows.ShutdownMode.OnMainWindowClose;
             //Comment
@@ -78,22 +96,21 @@ namespace FTPBoss
             bgwU.WorkerSupportsCancellation = true;
             bgwU.ProgressChanged += new ProgressChangedEventHandler(bgw_ProgressChanged);
             bgwU.DoWork += new DoWorkEventHandler(bgw_Upload);
-            bgwU.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgw_UploadCompleted);
+            bgwU.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgw_RunWorkerCompleted);
 
             bgwD.WorkerReportsProgress = true;
             bgwD.WorkerSupportsCancellation = true;
             bgwD.ProgressChanged += new ProgressChangedEventHandler(bgw_ProgressChanged);
             bgwD.DoWork += new DoWorkEventHandler(bgw_Download);
-            bgwD.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgw_DownloadCompleted);
+            bgwD.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgw_RunWorkerCompleted);
 
             
         }
 
-        ~MainWindow()
+        private void RefreshRemoteListBox()
         {
-
-            
-            // close ConnectionManagement window
+            RemoteDirectoryItem dir = getRemoteDirectory(navigation.ToString(), "");
+            ServerDirectoryBrowser.ItemsSource = dir.RemoteDirectoryItems;
         }
 
         private void getFTPRootDirectory()
@@ -115,6 +132,11 @@ namespace FTPBoss
             }
             */
 
+            Program2.PrevDirectory = Program2.CurrentDirectory;
+            Program2.CurrentDirectory = "";
+
+            navigation.AddRoot();
+
             RemoteDirectoryItem rootDir = getRemoteDirectory("", "");
 
             ServerDirectoryBrowser.ItemsSource = rootDir.RemoteDirectoryItems;
@@ -125,6 +147,8 @@ namespace FTPBoss
         private RemoteDirectoryItem getRemoteDirectory(string path, string name)
         {
             Contents dirConents = new Contents(path, name);
+
+            System.Windows.MessageBox.Show("Contents: " + dirConents.Count());
 
             List<Item> dirItems = dirConents.GetItems();
 
@@ -138,7 +162,11 @@ namespace FTPBoss
 
                if(name != "..")
                { 
-                    itemPath = path + "/" + name;
+                   if(name == "")
+                       itemPath = path;
+                   else
+                       itemPath = path + "/" + name;
+                   //itemPath = path;
 
                     if(path == "/")
                         itemPath = path + name;
@@ -266,36 +294,40 @@ namespace FTPBoss
         {
             if(ServerDirectoryBrowser.SelectedItem != null)
             {
-                //Debug.WriteLine(ServerDirectoryBrowser.SelectedItem.ToString());
-
                 RemoteDirectoryItem directoryItem = ServerDirectoryBrowser.SelectedItem as RemoteDirectoryItem;
-
                 Debug.WriteLine(directoryItem.Path);
-                
-                //Debug.WriteLine(dir0.ectory.Name + "," + directory.IsDirectory);
 
+                // Added this to fix navigation incompetence
                 if(directoryItem.IsDirectory)
                 {
-                    System.Windows.MessageBox.Show("Name: " + directoryItem.Name + "; Path: " + directoryItem.Path + "; Parent: " + directoryItem.ParentPath);
+                    //System.Windows.MessageBox.Show("Name: " + directoryItem.Name + "; Path: " + directoryItem.Path);
 
                     //Contents dirContents = new Contents("", directoryItem.Name);
 
                     RemoteDirectoryItem directory = null;
-
-                    // This is what's messed up
-
+                    
                     if (directoryItem.Name == "..")
                     {
-                        directory = getRemoteDirectory(directoryItem.ParentPath, "");
+                        navigation.Remove();
+                        string parentPath = directoryPathFTP(directoryItem.Path);
+                        Debug.WriteLine("Parent Path: " + parentPath);
+                        directory = getRemoteDirectory(parentPath, "");
+                    }
+                    else if (directoryItem.Name == ".")
+                    {
+                        return;
                     }
                     else
                     {
-                        directory = getRemoteDirectory(directoryItem.Path, directoryItem.Name);
+                        navigation.Add(directoryItem.Name);
                     }
 
+                    //navbar_text.Text = navigation.ToString();
+
+                    // uncomment this when ready
+                    directory = getRemoteDirectory(navigation.ToString(), "");
                     
                     ServerDirectoryBrowser.ItemsSource = directory.RemoteDirectoryItems;
-                    
                 }
             }
         }
@@ -314,14 +346,19 @@ namespace FTPBoss
 
                 Debug.WriteLine(directoryItem.Name);
 
+                if (directoryItem.Name == ".." || directoryItem.Name == ".")
+                    return;
+
                 if (directoryItem.IsDirectory)
                 {
                     Program2.DeleteDirectory(directoryItem.Path, directoryItem.Name);
                 }
                 else
                 {
-                    Program2.DeleteFile2(directoryItem.Path, directoryItem.Name);
+                    Program2.DeleteFile(directoryItem.Path, directoryItem.Name);
                 }
+
+                RefreshRemoteListBox();
             }
         }
 
@@ -400,6 +437,40 @@ namespace FTPBoss
             return path;
         }
 
+        private string directoryPathFTP(string path)
+        {
+            int index = path.LastIndexOf("/");
+
+            if (path == "")
+                return path;
+
+            if (index != -1)
+            {
+                if (path == "/")
+                {
+                    return path;
+                }
+                else
+                {
+                    //var count = path.Count(x => x == '/');
+                    //Debug.WriteLine(count);
+                    //if(count == 1)
+                    //{
+                    //path = path.Substring(0, index+1);
+                    //}
+                    //else
+                    //{
+                    Debug.WriteLine("Index of /: " + index);
+                    path = path.Substring(0, index);
+
+                    //}
+                }
+            }
+
+            return path;
+        }
+
+
 
         private void bgw_Upload(object sender, DoWorkEventArgs e)
         {
@@ -462,17 +533,9 @@ namespace FTPBoss
             progressBar.Value = e.ProgressPercentage;
         }
 
-        private async void bgw_UploadCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            //Debug.WriteLine("Finished loading");
-            var controller = await this.ShowMessageAsync("Done!", "Upload finished!");
-            progressBar.Value = 0;
-        }
-
-        private async void bgw_DownloadCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            //Debug.WriteLine("Finished loading");
-            var controller = await this.ShowMessageAsync("Done!", "Download finished!");
+            Debug.WriteLine("Finished loading");
             progressBar.Value = 0;
         }
 
@@ -482,11 +545,11 @@ namespace FTPBoss
             newWin.Show();
         }
 
-        private async void Button_Connect(object sender, RoutedEventArgs e)
+        private void Button_Connect(object sender, RoutedEventArgs e)
         {
             if(Program2.Host.Length == 0 || Program2.User.Length == 0 || Program2.Pass.Length == 0)
             {
-                var controller = await this.ShowMessageAsync("Wait!", "You need to log in first!");
+                System.Windows.MessageBox.Show("You need to log in first!");
                 return;
             }
 
@@ -563,8 +626,6 @@ namespace FTPBoss
 
         //This is the path to the directory of this item -- not the actual item. Actual path is: Path + Name.
         public string Path { get; set; }
-
-        public string ParentPath { get; set; }
 
         public int FileSize { get; set; }
 
