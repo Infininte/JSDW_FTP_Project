@@ -46,6 +46,8 @@ namespace FTPBoss
 
         public static Nav navigation = new Nav();
 
+
+
         public MainWindow()
         { 
             InitializeComponent();
@@ -84,11 +86,8 @@ namespace FTPBoss
             */
 
             getRootDirectories();
-
             //getFTPRootDirectory();
-
             //RemoteDirectoryItem directory = getRemoteDirectory("/", "new");
-
             //ServerDirectoryBrowser.ItemsSource = directory.RemoteDirectoryItems;
 
             //Background worker properties
@@ -103,8 +102,6 @@ namespace FTPBoss
             bgwD.ProgressChanged += new ProgressChangedEventHandler(bgw_ProgressChanged);
             bgwD.DoWork += new DoWorkEventHandler(bgw_Download);
             bgwD.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgw_RunWorkerCompleted);
-
-            
         }
 
         private void RefreshRemoteListBox()
@@ -117,11 +114,8 @@ namespace FTPBoss
         {
             /*
             Contents dirContents = new Contents("", "");
-
             List<Item> dirItems = dirContents.GetItems();
-
             RemoteDirectoryItem rootDir = new RemoteDirectoryItem() { Name = "", Path = "/" };
-
             Debug.WriteLine("************************************FSDFSDF*SDFSFSDFSDF**");
 
             foreach (Item item in dirItems)
@@ -148,7 +142,7 @@ namespace FTPBoss
         {
             Contents dirConents = new Contents(path, name);
 
-            System.Windows.MessageBox.Show("Contents: " + dirConents.Count());
+            //System.Windows.MessageBox.Show("Contents: " + dirConents.Count());
 
             List<Item> dirItems = dirConents.GetItems();
 
@@ -403,8 +397,10 @@ namespace FTPBoss
             ObservableCollection<RemoteDirectoryItem> dirItems = ServerDirectoryBrowser.ItemsSource as ObservableCollection<RemoteDirectoryItem>;
 
             Debug.WriteLine("New Dir Path: " + dirItems.Last().Path + "New Dir Name: " + result);
-
+            
             Program2.CreateDirectory(dirItems.Last().Path, "/" + result);
+
+            RefreshRemoteListBox();
 
             //await this.ShowMessageAsync("Hello", "Hello" + dirItems.Last().Path + "!");
         }

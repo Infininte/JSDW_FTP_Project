@@ -847,6 +847,25 @@ namespace FTPBoss
 
             creds.Add(profileName, new Credentials(host, user, pass, port));
         }
+        public void Edit(string profileName, string profile, string host, string user, string pass, string port)
+        {
+            if (creds.ContainsKey(profileName))
+            {
+                if (profileName != profile)
+                {
+                    Credentials newcred = new Credentials(host, user, pass, port);
+                    creds.Add(profile, newcred);
+                    creds.Remove(profileName);
+                }
+                else
+                {
+                    creds[profileName].Host = host;
+                    creds[profileName].User = user;
+                    creds[profileName].Pass = pass;
+                    creds[profileName].Port = port;
+                }
+            }
+        }
         public void Delete(string profileName)
         {
             if (!creds.ContainsKey(profileName))
@@ -1130,12 +1149,9 @@ namespace FTPBoss
 
         public static bool DeleteFile(string path, string fileName)
         {
-            Console.WriteLine("DeleteFile('" + path + "', '" + fileName + "')");
-
             // Check if file exists
             if (!FileExists(path, fileName))
             {
-                Console.WriteLine("File '" + fileName + "' does not exist!");
                 return false;
             }
 

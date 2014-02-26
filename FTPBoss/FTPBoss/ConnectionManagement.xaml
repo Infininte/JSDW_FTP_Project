@@ -30,18 +30,19 @@
 
         <Label Content="Port" HorizontalAlignment="Left" Width="61" Height="20" Margin="11,194,0,0" VerticalAlignment="Top" Padding="2"/>
         <TextBox x:Name="textbox_addport" Width="40" Height="10" Text="" Margin="11,214,241,30"/>
-        <Button x:Name="button_addprofile" Click="Button_Click" Width="50" Height="20" Margin="56,214,186,31" Content="Add!"/>
+        <Button x:Name="button_addprofile" Click="Button_Click" Width="50" Height="20" Margin="56,214,186,31" Content="Add"/>
 
         <ListBox x:Name="listbox_credentialprofiles" HorizontalAlignment="Left" Height="120" Margin="102,38,0,0" VerticalAlignment="Top" Width="165" BorderThickness="1">
 
         </ListBox>
         <Label Content="Credential Profiles" HorizontalAlignment="Left" Margin="135,12,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="button_load" Content="Load!" HorizontalAlignment="Left" Margin="187,169,0,0" VerticalAlignment="Top" Width="80" Click="button_load_Click"/>
-        <Button Content="Delete!" HorizontalAlignment="Left" Margin="102,169,0,0" VerticalAlignment="Top" Width="80" Click="Button_Click_1"/>
+        <Button x:Name="button_load" Content="Load" HorizontalAlignment="Left" Margin="217,169,0,0" VerticalAlignment="Top" Width="50" Click="button_load_Click"/>
+        <Button Content="Delete" HorizontalAlignment="Left" Margin="102,169,0,0" VerticalAlignment="Top" Width="50" Click="Button_Click_1"/>
         <Label Content="Profile Name" HorizontalAlignment="Left" Width="80" Height="20" Margin="10,10,0,0" VerticalAlignment="Top" Padding="2"/>
         <TextBox x:Name="textbox_addprofile" Width="80" Height="10" Text="" Margin="11,30,201,214"/>
         <StackPanel HorizontalAlignment="Left" Height="100" Margin="177,172,0,-2" VerticalAlignment="Top" Width="100"/>
-        <Button x:Name="button_savecredstofile" Content="Save to File!" HorizontalAlignment="Left" Margin="152,214,0,0" VerticalAlignment="Top" Width="89" Click="button_savecredstofile_Click"/>
+        <Button x:Name="button_savecredstofile" Content="Save to File" HorizontalAlignment="Left" Margin="152,214,0,0" VerticalAlignment="Top" Width="89" Click="button_savecredstofile_Click"/>
+        <Button x:Name="button_edit" Content="Edit" HorizontalAlignment="Left" Margin="159,169,0,0" VerticalAlignment="Top" Width="51" Click="button_edit_Click"/>
 
 
 
