@@ -168,7 +168,11 @@ namespace FTPBoss
 
                if(name != "..")
                { 
-                    itemPath = path + "/" + name;
+                   if(name == "")
+                       itemPath = path;
+                   else
+                       itemPath = path + "/" + name;
+                   //itemPath = path;
 
                     if(path == "/")
                         itemPath = path + name;
@@ -302,11 +306,18 @@ namespace FTPBoss
                 // Added this to fix navigation incompetence
                 if(directoryItem.IsDirectory)
                 {
-                    RemoteDirectoryItem directory = null;
+                    //System.Windows.MessageBox.Show("Name: " + directoryItem.Name + "; Path: " + directoryItem.Path);
 
+                    //Contents dirContents = new Contents("", directoryItem.Name);
+
+                    RemoteDirectoryItem directory = null;
+                    
                     if (directoryItem.Name == "..")
                     {
                         navigation.Remove();
+                        string parentPath = directoryPathFTP(directoryItem.Path);
+                        Debug.WriteLine("Parent Path: " + parentPath);
+                        directory = getRemoteDirectory(parentPath, "");
                     }
                     else if (directoryItem.Name == ".")
                     {
@@ -427,6 +438,40 @@ namespace FTPBoss
 
             return path;
         }
+
+        private string directoryPathFTP(string path)
+        {
+            int index = path.LastIndexOf("/");
+
+            if (path == "")
+                return path;
+
+            if (index != -1)
+            {
+                if (path == "/")
+                {
+                    return path;
+                }
+                else
+                {
+                    //var count = path.Count(x => x == '/');
+                    //Debug.WriteLine(count);
+                    //if(count == 1)
+                    //{
+                    //path = path.Substring(0, index+1);
+                    //}
+                    //else
+                    //{
+                    Debug.WriteLine("Index of /: " + index);
+                    path = path.Substring(0, index);
+
+                    //}
+                }
+            }
+
+            return path;
+        }
+
 
 
         private void bgw_Upload(object sender, DoWorkEventArgs e)
@@ -583,8 +628,6 @@ namespace FTPBoss
 
         //This is the path to the directory of this item -- not the actual item. Actual path is: Path + Name.
         public string Path { get; set; }
-
-        public string ParentPath { get; set; }
 
         public int FileSize { get; set; }
 
